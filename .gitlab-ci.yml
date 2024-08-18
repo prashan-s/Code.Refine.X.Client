@@ -1,0 +1,29 @@
+stages:
+  - build
+  - docker
+
+build:
+  stage: build
+  image: node:20
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+
+docker_build_and_push:
+  stage: docker
+  image: docker:20.10.7
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE:latest" .
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
