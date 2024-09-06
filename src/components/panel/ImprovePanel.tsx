@@ -2,14 +2,17 @@ import React from 'react';
 import {
     PanelContainer,
     SectionTitle,
+    Divider
+} from '@styles/Common.Panel';
+import {
     ScoreText,
     ProgressBar,
     ProgressIndicator,
     ProgressLabel,
     InsightItem,
-    ProgressCircle,
-    Divider
-} from '@styles/Improve.Panel'; // Assuming the styles are imported
+    ProgressCircle
+} from '@styles/Improve.Panel';
+
 
 const ImprovePanel: React.FC = () => {
     return (
@@ -63,7 +66,7 @@ const ImprovePanel: React.FC = () => {
 
             {/* Tools Section */}
             <SectionTitle>Tools</SectionTitle>
-            
+
             <Divider />
         </PanelContainer>
     );
