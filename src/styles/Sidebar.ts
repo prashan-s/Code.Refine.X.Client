@@ -31,19 +31,7 @@ export const CollapsedSidebar = styled.div`  /* New styled component for collaps
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  z-index: 999;  /* Ensure it stays on top */
-`;
-
-export const BurgerButton = styled.button`
-  background-color: transparent;  /* Made transparent to fit white stripe */
-  border: none;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  z-index: 1;  /* Ensure it stays on top */
 `;
 
 export const LeftPanel = styled.div`
