@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
 import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
+import snippetAcc from "@components/snippets/SnippetAccording.tsx";
 
 const Sidebar = () => {
     const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const Sidebar = () => {
                 <LeftPanel>
                     <HideButton onClick={toggleSidebar} isCollapsed={isCollapsed}>
                         <h2>Hide ➔</h2>
+                        {snippetAcc("Hello!!", "Dula!")}
                     </HideButton>
                 </LeftPanel>
                 <RightPanel>
