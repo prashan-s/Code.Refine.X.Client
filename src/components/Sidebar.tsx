@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import snippetAcc from "@components/snippets/SnippetAccording.tsx";
 import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
+import ReusePanel from "@components/panel/ReusePanel"
 const Sidebar = () => {
     const dispatch = useDispatch();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
@@ -37,11 +38,11 @@ const Sidebar = () => {
         switch (selectedItem) {
             case 0:
                 title = 'Improve Content';
-                content = <ImprovePanel/>;
+                content = <ImprovePanel />;
                 break;
             case 1:
                 title = 'Format Content';
-                content = <div>Format Content</div>;
+                content = <ReusePanel />;
                 break;
             case 2:
                 title = 'Reuse Content';
