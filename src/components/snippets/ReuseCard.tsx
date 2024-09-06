@@ -1,65 +1,28 @@
 import {
-    Accordion,
     AccordionSummary,
     AccordionDetails,
-    Typography,
-    Chip,
-    Box,
     IconButton
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { styled } from '@mui/material/styles';
+
 import axiosInstance from "src/utils/axiosInstance";
 
-
-const StyledAccordion = styled(Accordion)(() => ({
-}));
-
-const HeaderBox = styled(Box)(() => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'center',
-}));
-
-const TitleTypography = styled(Typography)(() => ({
-    flexGrow: 1,
-}));
-
-const StyledChip = styled(Chip)(({ theme }) => ({
-    backgroundColor: '#FFEB3B',
-    fontWeight: 'bold',
-    marginRight: theme.spacing(1),
-}));
-
-const DateTypography = styled(Typography)(({ theme }) => ({
-    color: theme.palette.text.secondary,
-}));
-
-const ButtonBox = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%',
-    marginTop: theme.spacing(2),
-}));
-
-const StyledDeleteIcon = styled(DeleteIcon)(() => ({
-    color: 'red',
-}));
-
-const ContentWrapper = styled('div')({
-    width: '100%',
-    overflowWrap: 'break-word',
-    wordBreak: 'break-word',
-    display: 'block',
-    boxSizing: 'border-box',
-});
+import {
+    StyledAccordion,
+    HeaderBox,
+    TitleTypography,
+    StyledChip,
+    DateTypography,
+    ButtonBox,
+    StyledDeleteIcon,
+    ContentWrapper
+} from '@styles/ReuseCard'
 
 interface ReuseCardProps {
     id: number;
     title: string;
     content: string;
+    language: string;
     createdDate: string;
 }
 
@@ -95,6 +58,7 @@ const ReuseCard: React.FC<ReuseCardProps> = (props) => {
                 <ContentWrapper>
                     {props.content}
                 </ContentWrapper>
+                <StyledChip label={props.language} />
                 <ButtonBox>
                     <IconButton
                         aria-label="delete"

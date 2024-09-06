@@ -12,7 +12,7 @@ const ReusePanel: React.FC = () => {
             {/* Snippets Section */}
             <SectionTitle>Snippets</SectionTitle>
             {/* Divider */}
-            <ReuseCard id={0} title={'Test'} content={'sadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakja'} createdDate={''} ></ReuseCard>
+            <ReuseCard id={0} title={'Test'} content={'avx'} language='JAVA' createdDate={'sadad'} ></ReuseCard>
             <Divider />
 
         </PanelContainer>
