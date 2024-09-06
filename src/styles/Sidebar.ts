@@ -4,7 +4,6 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   height: 100vh;
-  width: 100%;
 `;
 
 export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`

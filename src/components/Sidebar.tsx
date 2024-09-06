@@ -1,14 +1,23 @@
+import { RootState } from '@redux/reducers';
+import { collapsed, extended } from '@redux/reducers/sideBarReducer';
 import { CollapsedSidebar, Heading, HideButton, HorizontalLine, IconWrapper, LeftPanel, MainContainer, NavItem, RightPanel, SidebarContainer } from '@styles/Sidebar';
 import { useState } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
 import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
+import { useDispatch, useSelector } from 'react-redux';
 
 const Sidebar = () => {
+    const dispatch = useDispatch();
+    const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
+
     const [selectedItem, setSelectedItem] = useState<number>(0);
-    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const toggleSidebar = () => {
-        setIsCollapsed((prev) => !prev);
+        if (isCollapsed) {
+            dispatch(extended());
+        } else {
+            dispatch(collapsed());
+        }
     };
 
     const handleItemClick = (index: number) => {
@@ -17,13 +26,6 @@ const Sidebar = () => {
 
     return (
         <MainContainer>
-            {/* Main content area */}
-            <div style={{ flex: 1, transition: 'margin-right 0.3s ease', marginRight: isCollapsed ? '60px' : '600px' }}> {/* Adjusted margin for stripe */}
-                {/* Your main content goes here */}
-                <p>Main content area</p>
-            </div>
-
-            {/* Extend icon and icons stripe for collapsed sidebar */}
             {isCollapsed && (
                 <CollapsedSidebar>
                     {/* Display icons in a white background stripe */}
