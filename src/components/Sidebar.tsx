@@ -25,6 +25,21 @@ const Sidebar = () => {
         setSelectedItem(index);
     };
 
+    const renderContent = () => {
+        switch (selectedItem) {
+          case 0:
+            return <div>Improve Content</div>;
+          case 1:
+            return <div>Format Content</div>;
+          case 2:
+            return <div>Reuse Content</div>;
+          case 3:
+            return <div>Share Content</div>;
+          default:
+            return <div>Select an option to view content</div>;
+        }
+      };
+    
     return (
         <MainContainer>
             {isCollapsed && (
@@ -63,8 +78,8 @@ const Sidebar = () => {
                 <LeftPanel>
                     <HideButton onClick={toggleSidebar} isCollapsed={isCollapsed}>
                         <h2>Hide ➔</h2>
-                        {snippetAcc("Hello!!", "Dula!")}
                     </HideButton>
+                    {renderContent()}
                 </LeftPanel>
                 <RightPanel>
                     <Heading>CodeRefineX</Heading>
