@@ -35,6 +35,7 @@ export const CollapsedSidebar = styled.div`  /* New styled component for collaps
 `;
 
 export const LeftPanel = styled.div`
+  height: 100vh;
   background-color: #fff;
   display: flex;
   flex-direction: column;

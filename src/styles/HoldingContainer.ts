@@ -8,3 +8,10 @@ export const HoldingContainer = styled.div`
   height: 100vh;                /* Full height for the parent */
   padding: 16px;      
 `;
+
+export const SideHoldingContainerWrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  box-sizing: border-box;
+  overflow: auto;
+`;

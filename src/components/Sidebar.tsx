@@ -7,6 +7,7 @@ import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
 import snippetAcc from "@components/snippets/SnippetAccording.tsx";
 import SideHoldingContainer from "@components/common/SideHoldingContainer"
+import ImprovePanel from "@components/panel/ImprovePanel"
 const Sidebar = () => {
     const dispatch = useDispatch();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
@@ -36,7 +37,7 @@ const Sidebar = () => {
         switch (selectedItem) {
             case 0:
                 title = 'Improve Content';
-                content = <div>Improve Content</div>;
+                content = <ImprovePanel/>;
                 break;
             case 1:
                 title = 'Format Content';
