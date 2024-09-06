@@ -42,11 +42,11 @@ const Sidebar = () => {
                 break;
             case 1:
                 title = 'Format Content';
-                content = <ReusePanel />;
+                content = <div>Format Content</div>;
                 break;
             case 2:
                 title = 'Reuse Content';
-                content = <div>Reuse Content</div>;
+                content = <ReusePanel />;
                 break;
             case 3:
                 title = 'Share Content';

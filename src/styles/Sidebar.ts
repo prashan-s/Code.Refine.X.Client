@@ -16,6 +16,7 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
   right: 0;
   top: 0;
   bottom: 0;
+  row-gap: 1em;
 `;
 
 export const CollapsedSidebar = styled.div`  /* New styled component for collapsed sidebar */
@@ -41,7 +42,7 @@ export const LeftPanel = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 1em;
   position: relative;
   border-right: 1px solid #e8e8e8;
   border-radius: 15px 0 0 15px;
@@ -65,7 +66,7 @@ export const HideButton = styled.button<{ isCollapsed: boolean }>`
 `;
 
 export const Heading = styled.h1`
-  margin-bottom: 50px;
+  margin-bottom: 0px;
   text-align: left;
 `;
 
@@ -74,7 +75,7 @@ export const HorizontalLine = styled.hr`  /* New horizontal line */
   border: none;
   border-top: 1px solid #e8e8e8;  /* Line color */
   padding-right: 20px;
-  margin-bottom: 20px;  /* Space below the line */
+  margin-bottom: 5px;  /* Space below the line */
 `;
 
 export const NavItem = styled.div<{ isSelected: boolean }>`
