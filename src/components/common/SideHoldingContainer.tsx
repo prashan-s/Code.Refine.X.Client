@@ -12,11 +12,11 @@ interface HoldingContainerProps {
 
 
 
-const SideHoldingContainer: React.FC<HoldingContainerProps> = ({ title, selectedComponent }) => {
+const SideHoldingContainer: React.FC<HoldingContainerProps> = (props) => {
     return (
         <SideHoldingContainerWrapper>
-            <h3>{title}</h3>
-            <HoldingContainer>{selectedComponent}</HoldingContainer>
+            <h3>{props.title}</h3>
+            <HoldingContainer>{props.selectedComponent}</HoldingContainer>
         </SideHoldingContainerWrapper>
     );
 };

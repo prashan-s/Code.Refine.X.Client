@@ -3,15 +3,18 @@ import {
     PanelContainer,
     SectionTitle,
     Divider
-} from '@styles/Common.Panel'; // Assuming the styles are imported
+} from '@styles/Common.Panel';
 
+import ReuseCard from '@components/snippets/ReuseCard';
 const ReusePanel: React.FC = () => {
     return (
         <PanelContainer>
-            {/* Overall Score Section */}
-            <SectionTitle>Overall Score</SectionTitle>
+            {/* Snippets Section */}
+            <SectionTitle>Snippets</SectionTitle>
             {/* Divider */}
+            <ReuseCard id={0} title={'Test'} content={'sadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakjasadaskdnakja'} createdDate={''} ></ReuseCard>
             <Divider />
+
         </PanelContainer>
     );
 };
