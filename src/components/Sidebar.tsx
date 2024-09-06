@@ -1,17 +1,21 @@
 import { RootState } from '@redux/reducers';
 import { collapsed, extended } from '@redux/reducers/sideBarReducer';
 import { CollapsedSidebar, Heading, HideButton, HorizontalLine, IconWrapper, LeftPanel, MainContainer, NavItem, RightPanel, SidebarContainer } from '@styles/Sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
 import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
 import snippetAcc from "@components/snippets/SnippetAccording.tsx";
-
+import SideHoldingContainer from "@components/common/SideHoldingContainer"
 const Sidebar = () => {
     const dispatch = useDispatch();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
 
     const [selectedItem, setSelectedItem] = useState<number>(0);
+    const [contentData, setContentData] = useState<{ title: string; content: React.ReactNode }>({
+        title: '',
+        content: <div>Select an option to view content</div>,
+    });
 
     const toggleSidebar = () => {
         if (isCollapsed) {
@@ -25,21 +29,38 @@ const Sidebar = () => {
         setSelectedItem(index);
     };
 
-    const renderContent = () => {
+    useEffect(() => {
+        let title = '';
+        let content: React.ReactNode;
+
         switch (selectedItem) {
-          case 0:
-            return <div>Improve Content</div>;
-          case 1:
-            return <div>Format Content</div>;
-          case 2:
-            return <div>Reuse Content</div>;
-          case 3:
-            return <div>Share Content</div>;
-          default:
-            return <div>Select an option to view content</div>;
+            case 0:
+                title = 'Improve Content';
+                content = <div>Improve Content</div>;
+                break;
+            case 1:
+                title = 'Format Content';
+                content = <div>Format Content</div>;
+                break;
+            case 2:
+                title = 'Reuse Content';
+                content = <div>Reuse Content</div>;
+                break;
+            case 3:
+                title = 'Share Content';
+                content = <div>Share Content</div>;
+                break;
+            default:
+                title = 'Select an option';
+                content = <div>Select an option to view content</div>;
+                break;
         }
-      };
-    
+
+        // Update contentData state
+        setContentData({ title, content });
+
+    }, [selectedItem]);
+
     return (
         <MainContainer>
             {isCollapsed && (
@@ -79,7 +100,7 @@ const Sidebar = () => {
                     <HideButton onClick={toggleSidebar} isCollapsed={isCollapsed}>
                         <h2>Hide ➔</h2>
                     </HideButton>
-                    {renderContent()}
+                    <SideHoldingContainer title={contentData.title} selectedComponent={contentData.content} />
                 </LeftPanel>
                 <RightPanel>
                     <Heading>CodeRefineX</Heading>

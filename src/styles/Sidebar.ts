@@ -26,7 +26,7 @@ export const CollapsedSidebar = styled.div`  /* New styled component for collaps
   height: 100vh;
   row-gap: 1em;
   padding-top: 1em;
-  background-color: #fff;
+  background-color: #f4f4f4;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +35,7 @@ export const CollapsedSidebar = styled.div`  /* New styled component for collaps
 `;
 
 export const LeftPanel = styled.div`
-  background-color: #f4f4f4;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
