@@ -4,6 +4,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDropDown';
 
+//According for snippets
 const snippetAcc =  function AccordionExpandIcon(content:string, title:string) {
     return (
         <div>
