@@ -5,7 +5,7 @@ import {
     Divider
 } from '@styles/Common.Panel';
 
-import ReuseCard from '@components/snippets/ReuseCard';
+import GistCard from '@components/GistCard';
 
 const GistPanel: React.FC = () => {
     const [snippets, setSnippets] = useState<any[]>([]);
@@ -39,12 +39,15 @@ const GistPanel: React.FC = () => {
             <SectionTitle>Snippets</SectionTitle>
             {snippets.map(snippet => (
                 <React.Fragment key={snippet.snippetID}>
-                    <ReuseCard
+                    <GistCard
                         id={snippet.gistid}
                         title={snippet.title}
                         content={snippet.description}
                         language={snippet.language}
                         createdDate={snippet.dateCreated}
+                        url={snippet.url}
+
+                        onClick={() => window.open(snippet.url, '_blank')}
                     />
                     <Divider />
                 </React.Fragment>
