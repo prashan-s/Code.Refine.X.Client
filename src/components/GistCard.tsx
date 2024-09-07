@@ -47,7 +47,7 @@ const GistCard: React.FC<GistCardProps> = (props) => {
                 id="panel1a-header"
             >
                 <HeaderBox>
-                    <TitleTypography variant="h8">
+                    <TitleTypography variant="h6">
                         {props.title}
                     </TitleTypography>
                     {/*<StyledChip label="Java" />*/}
