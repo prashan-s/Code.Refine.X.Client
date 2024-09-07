@@ -52,19 +52,19 @@ function CircularProgressWithLabel(
 }
 
 const ImprovePanel: React.FC = () => {
-const [inputCode, setInputCode] = useState('');
-const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult>();
-const [debouncedCode, setDebouncedCode] = useState(inputCode);
+    const [inputCode, setInputCode] = useState('');
+    const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult>();
+    const [debouncedCode, setDebouncedCode] = useState(inputCode);
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedCode(inputCode);
         }, 500);
-    
+
         return () => {
             clearTimeout(handler);
         };
     }, [inputCode]);
-    
+
     useEffect(() => {
         if (debouncedCode.trim() !== '') {
             const result = CodeAnalysisFacade.analyzeCode(debouncedCode);
@@ -74,19 +74,19 @@ const [debouncedCode, setDebouncedCode] = useState(inputCode);
         }
     }, [debouncedCode]);
 
-    
-const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputCode(e.target.value);
-};
 
-const handleAnalyzeCode = () => {
-    if (inputCode.trim() !== '') {
-        const result = CodeAnalysisFacade.analyzeCode(inputCode);
-        setAnalysisResult(result);
-    } else {
-        
-    }
-};
+    const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setInputCode(e.target.value);
+    };
+
+    const handleAnalyzeCode = () => {
+        if (inputCode.trim() !== '') {
+            const result = CodeAnalysisFacade.analyzeCode(inputCode);
+            setAnalysisResult(result);
+        } else {
+
+        }
+    };
 
     return (
         <PanelContainer>
@@ -102,19 +102,16 @@ const handleAnalyzeCode = () => {
             {/* Insights Section */}
             <SectionTitle>Insights</SectionTitle>
             <InsightItem>
+                <span>Big O</span>
+                <span>{analysisResult?.complexity.bigONotation}</span>
+            </InsightItem>
+            <InsightItem>
                 <span>Loops</span>
                 <span>{analysisResult?.metrics.loopCount}</span>
             </InsightItem>
-
             <InsightItem>
-                <span>Conditions</span>
-                <span>{analysisResult?.metrics.conditionals}</span>
-                {/* <CircularProgressWithLabel variant="determinate" value={23} /> */}
-            </InsightItem>
-            <InsightItem>
-                <span>Nested Loops</span>
-                <span>{analysisResult?.metrics.nestedLoopCount}</span>
-                {/* <CircularProgressWithLabel variant="determinate" value={100} /> */}
+                <span>Has Recursions</span>
+                <span>{analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span>
             </InsightItem>
 
             {/* Divider */}
@@ -131,43 +128,47 @@ const handleAnalyzeCode = () => {
                 <span>{analysisResult?.metrics.loopCount}</span>
             </InsightItem>
             <InsightItem>
-                <span>Loops</span>
-                <span>{analysisResult?.metrics.loopCount}</span>
+                <span> Nested Loops</span>
+                <span>{analysisResult?.metrics.nestedLoopCount}</span>
             </InsightItem>
             <InsightItem>
-                <span>Loops</span>
-                <span>{analysisResult?.metrics.loopCount}</span>
+                <span>Conditionals</span>
+                <span>{analysisResult?.metrics.conditionals}</span>
             </InsightItem>
             <InsightItem>
-                <span>Loops</span>
-                <span>{analysisResult?.metrics.loopCount}</span>
+                <span>Has Recursions</span>
+                <span>{analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span>
+            </InsightItem>
+
+            <InsightItem>
+                <span>Function Calls</span>
+                <span>{analysisResult?.metrics.functionCalls}</span>
             </InsightItem>
             <InsightItem>
-                <span>Loops</span>
-                <span>{analysisResult?.metrics.loopCount}</span>
+                <span>Array Count</span>
+                <span>{analysisResult?.metrics.dataStructures}</span>
             </InsightItem>
 
             {/* Divider */}
             <Divider />
 
-            {/* Suggestions Section */}
-            <SectionTitle>Suggestions</SectionTitle>
-            <Divider />
-
             {/* Tools Section */}
             <SectionTitle>Errors</SectionTitle>
             {true ? (
-        <ul>
-          {analysisResult?.syntax.errors.map((error, index) => (
-            <li key={index}>{`Error ${index + 1}: ${error}`}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No errors found</p>
-      )}
+                <ul>
+                    {analysisResult?.syntax.errors.map((error, index) => (
+                        <li key={index}>{`Error ${index + 1}: ${error}`}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No errors found</p>
+            )}
             <Divider />
             <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} />
-           
+
+            {/* Suggestions Section */}
+            <SectionTitle>Suggestions</SectionTitle>
+            <Divider />
         </PanelContainer>
     );
 };
