@@ -1,5 +1,5 @@
 export interface SyntaxAnalysisResult {
-    errors: string[];
+    errors: string[] | [];
 }
 
 export class SyntaxAnalyzer {

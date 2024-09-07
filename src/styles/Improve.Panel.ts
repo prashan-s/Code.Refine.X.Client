@@ -21,7 +21,7 @@ interface ProgressIndicatorProps {
 export const ProgressIndicator = styled.div<ProgressIndicatorProps>`
   width: 100%;
   height: 16px;
-  background: linear-gradient(to right, #28a745, #f8c471, #e74c3c);
+  background: linear-gradient(to right, #e74c3c, #f8c471, #28a745);
   border-radius: 8px;
   position: relative;
 
