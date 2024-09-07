@@ -18,7 +18,10 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import { CodeAnalysisFacade, CodeAnalysisResult, DefaultCodeAnalysisResult } from '@components/codeAnalysis/CodeAnalysisFacade';
-import { TextField } from '@mui/material';
+import { TextareaAutosize } from '@mui/material';
+
+
+
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number },
@@ -47,10 +50,6 @@ function CircularProgressWithLabel(
         </Box>
     );
 }
-
-
-
-
 
 const ImprovePanel: React.FC = () => {
 const [inputCode, setInputCode] = useState('');
@@ -156,10 +155,18 @@ const handleAnalyzeCode = () => {
             <Divider />
 
             {/* Tools Section */}
-            <SectionTitle>Tools</SectionTitle>
-
+            <SectionTitle>Errors</SectionTitle>
+            {true ? (
+        <ul>
+          {analysisResult?.syntax.errors.map((error, index) => (
+            <li key={index}>{`Error ${index + 1}: ${error}`}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No errors found</p>
+      )}
             <Divider />
-            <TextField id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} />
+            <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} />
            
         </PanelContainer>
     );
