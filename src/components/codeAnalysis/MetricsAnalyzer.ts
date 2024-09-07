@@ -44,7 +44,6 @@ export class MetricsAnalyzer {
 
     private static checkForRecursion(code: string, functionNames: string[]): boolean {
         for (const functionName of functionNames) {
-
             const recursionPattern = new RegExp(`\\b${functionName}\\s*\\(`, 'g');
             if (recursionPattern.test(code)) {
                 return true;
@@ -52,7 +51,7 @@ export class MetricsAnalyzer {
         }
         return false;
     }
-
+    
     private static countFunctionCalls(code: string): number {
         const functionCalls = (code.match(/\b\w+\s*\(/g) || []).length - this.countLoops(code); // Exclude loop headers
         return functionCalls;
