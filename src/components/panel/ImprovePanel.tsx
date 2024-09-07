@@ -105,9 +105,12 @@ const ImprovePanel: React.FC = () => {
             <ProgressBar>
                 <ProgressIndicator score={analysisResult?.finalScore} />
             </ProgressBar>
-
             {/* Insights Section */}
             <SectionTitle>Insights</SectionTitle>
+            <InsightItem>
+                <span>Language</span>
+                <span>{analysisResult?.language}</span>
+            </InsightItem>
             <InsightItem>
                 <span>Big O</span>
                 <span>{analysisResult?.complexity.bigONotation}</span>
