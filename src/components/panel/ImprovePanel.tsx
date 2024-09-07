@@ -56,7 +56,7 @@ function CircularProgressWithLabel(
 const ImprovePanel: React.FC = () => {
 
     const editorCode = useSelector((state: RootState) => state.monaco.editorCode);
-    
+
     const [inputCode, setInputCode] = useState('');
     const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult>();
     const [debouncedCode, setDebouncedCode] = useState(inputCode);
@@ -119,10 +119,6 @@ const ImprovePanel: React.FC = () => {
                 <span>Loops</span>
                 <span>{analysisResult?.metrics.loopCount}</span>
             </InsightItem>
-            <InsightItem>
-                <span>Has Recursions</span>
-                <span>{analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span>
-            </InsightItem>
 
             {/* Divider */}
             <Divider />
@@ -145,10 +141,10 @@ const ImprovePanel: React.FC = () => {
                 <span>Conditionals</span>
                 <span>{analysisResult?.metrics.conditionals}</span>
             </InsightItem>
-            <InsightItem>
+            {/* <InsightItem>
                 <span>Has Recursions</span>
                 <span>{analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span>
-            </InsightItem>
+            </InsightItem> */}
 
             <InsightItem>
                 <span>Function Calls</span>

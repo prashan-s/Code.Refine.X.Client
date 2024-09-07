@@ -43,14 +43,25 @@ export class MetricsAnalyzer {
     }
 
     private static checkForRecursion(code: string, functionNames: string[]): boolean {
+        // Break the code into individual functions and analyze each function separately
         for (const functionName of functionNames) {
-            const recursionPattern = new RegExp(`\\b${functionName}\\s*\\(`, 'g');
-            if (recursionPattern.test(code)) {
-                return true;
+            // Create a pattern to isolate the specific function body
+            const functionPattern = new RegExp(`\\b(?:public|private|protected)?\\s*\\w+\\s+${functionName}\\s*\\([^)]*\\)\\s*\\{([^}]+)\\}`, 'gs');
+            let match;
+            while ((match = functionPattern.exec(code)) !== null) {
+                const functionBody = match[1];
+    
+                // Check for recursive calls within the function body
+                const recursionPattern = new RegExp(`\\b${functionName}\\s*\\(`, 'g');
+                if (recursionPattern.test(functionBody)) {
+                    return true;
+                }
             }
         }
         return false;
     }
+    
+    
     
     private static countFunctionCalls(code: string): number {
         const functionCalls = (code.match(/\b\w+\s*\(/g) || []).length - this.countLoops(code); // Exclude loop headers
