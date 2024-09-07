@@ -1,10 +1,10 @@
 export interface MetricsAnalysisResult {
-    loopCount: number;
-    nestedLoopCount: number;
-    hasRecursion: boolean;
-    functionCalls: number;
-    conditionals: number;
-    dataStructures: number;
+    loopCount: number | 0;
+    nestedLoopCount: number | 0;
+    hasRecursion: boolean  | false;
+    functionCalls: number  | 0;
+    conditionals: number  | 0;
+    dataStructures: number  | 0;
 }
 export class MetricsAnalyzer {
     static analyzeMetrics(code: string): MetricsAnalysisResult {

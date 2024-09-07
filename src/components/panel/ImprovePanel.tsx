@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     PanelContainer,
     SectionTitle,
@@ -16,6 +16,12 @@ import CircularProgress, {
 } from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+
+import { CodeAnalysisFacade, CodeAnalysisResult, DefaultCodeAnalysisResult } from '@components/codeAnalysis/CodeAnalysisFacade';
+import { TextareaAutosize } from '@mui/material';
+
+
+
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number },
@@ -46,32 +52,69 @@ function CircularProgressWithLabel(
 }
 
 const ImprovePanel: React.FC = () => {
+const [inputCode, setInputCode] = useState('');
+const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult>();
+const [debouncedCode, setDebouncedCode] = useState(inputCode);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedCode(inputCode);
+        }, 500);
+    
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [inputCode]);
+    
+    useEffect(() => {
+        if (debouncedCode.trim() !== '') {
+            const result = CodeAnalysisFacade.analyzeCode(debouncedCode);
+            setAnalysisResult(result);
+        } else {
+            setAnalysisResult(DefaultCodeAnalysisResult);
+        }
+    }, [debouncedCode]);
+
+    
+const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputCode(e.target.value);
+};
+
+const handleAnalyzeCode = () => {
+    if (inputCode.trim() !== '') {
+        const result = CodeAnalysisFacade.analyzeCode(inputCode);
+        setAnalysisResult(result);
+    } else {
+        
+    }
+};
+
     return (
         <PanelContainer>
             {/* Overall Score Section */}
             <SectionTitle>Overall Score</SectionTitle>
-            <ScoreText>3.9</ScoreText>
+            <ScoreText>{analysisResult?.finalScore}</ScoreText>
 
             {/* Progress Bar Section */}
             <ProgressBar>
-                <ProgressLabel>0</ProgressLabel>
-                <ProgressIndicator score={0} />
-                <ProgressLabel>100</ProgressLabel>
+                <ProgressIndicator score={analysisResult?.finalScore} />
             </ProgressBar>
 
             {/* Insights Section */}
             <SectionTitle>Insights</SectionTitle>
             <InsightItem>
                 <span>Loops</span>
-                <CircularProgressWithLabel variant="determinate" value={44} />
+                <span>{analysisResult?.metrics.loopCount}</span>
             </InsightItem>
+
             <InsightItem>
                 <span>Conditions</span>
-                <CircularProgressWithLabel variant="determinate" value={23} />
+                <span>{analysisResult?.metrics.conditionals}</span>
+                {/* <CircularProgressWithLabel variant="determinate" value={23} /> */}
             </InsightItem>
             <InsightItem>
                 <span>Nested Loops</span>
-                <CircularProgressWithLabel variant="determinate" value={100} />
+                <span>{analysisResult?.metrics.nestedLoopCount}</span>
+                {/* <CircularProgressWithLabel variant="determinate" value={100} /> */}
             </InsightItem>
 
             {/* Divider */}
@@ -80,12 +123,28 @@ const ImprovePanel: React.FC = () => {
             {/* Advanced Section */}
             <SectionTitle>Advanced</SectionTitle>
             <InsightItem>
-                <span>Loops</span>
-                <span>1 / 10</span>
+                <span>Big O</span>
+                <span>{analysisResult?.complexity.bigONotation}</span>
             </InsightItem>
             <InsightItem>
-                <span>Big O</span>
-                <span>n</span>
+                <span>Loops</span>
+                <span>{analysisResult?.metrics.loopCount}</span>
+            </InsightItem>
+            <InsightItem>
+                <span>Loops</span>
+                <span>{analysisResult?.metrics.loopCount}</span>
+            </InsightItem>
+            <InsightItem>
+                <span>Loops</span>
+                <span>{analysisResult?.metrics.loopCount}</span>
+            </InsightItem>
+            <InsightItem>
+                <span>Loops</span>
+                <span>{analysisResult?.metrics.loopCount}</span>
+            </InsightItem>
+            <InsightItem>
+                <span>Loops</span>
+                <span>{analysisResult?.metrics.loopCount}</span>
             </InsightItem>
 
             {/* Divider */}
@@ -96,11 +155,30 @@ const ImprovePanel: React.FC = () => {
             <Divider />
 
             {/* Tools Section */}
-            <SectionTitle>Tools</SectionTitle>
-
+            <SectionTitle>Errors</SectionTitle>
+            {true ? (
+        <ul>
+          {analysisResult?.syntax.errors.map((error, index) => (
+            <li key={index}>{`Error ${index + 1}: ${error}`}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No errors found</p>
+      )}
             <Divider />
+            <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} />
+           
         </PanelContainer>
     );
 };
 
 export default ImprovePanel;
+
+
+
+
+
+
+
+
+

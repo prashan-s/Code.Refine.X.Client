@@ -12,6 +12,25 @@ export interface CodeAnalysisResult {
     finalScore: number;
 }
 
+export const DefaultCodeAnalysisResult: CodeAnalysisResult = {
+    language: "", // Default empty string for language
+    syntax: {
+        errors: [] // Default empty array for errors
+    },
+    metrics: {
+        loopCount: 0,
+        nestedLoopCount: 0,
+        hasRecursion: false,
+        functionCalls: 0,
+        conditionals: 0,
+        dataStructures: 0
+    },
+    complexity: {
+        bigONotation: "O(1)" // Default to constant time complexity
+    },
+    finalScore: 0 // Default score is 0
+};
+
 export class CodeAnalysisFacade {
     static analyzeCode(code: string): CodeAnalysisResult {
         const language = LanguageDetector.detectLanguage(code);
