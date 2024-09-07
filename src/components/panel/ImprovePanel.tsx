@@ -19,6 +19,8 @@ import Box from '@mui/material/Box';
 
 import { CodeAnalysisFacade, CodeAnalysisResult, DefaultCodeAnalysisResult } from '@components/codeAnalysis/CodeAnalysisFacade';
 import { TextareaAutosize } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/reducers';
 
 
 
@@ -52,18 +54,23 @@ function CircularProgressWithLabel(
 }
 
 const ImprovePanel: React.FC = () => {
+
+    const editorCode = useSelector((state: RootState) => state.monaco.editorCode);
+    
     const [inputCode, setInputCode] = useState('');
     const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult>();
     const [debouncedCode, setDebouncedCode] = useState(inputCode);
+
     useEffect(() => {
         const handler = setTimeout(() => {
-            setDebouncedCode(inputCode);
+            setDebouncedCode(editorCode);
+            setInputCode(editorCode);
         }, 500);
 
         return () => {
             clearTimeout(handler);
         };
-    }, [inputCode]);
+    }, [editorCode]);
 
     useEffect(() => {
         if (debouncedCode.trim() !== '') {
@@ -164,7 +171,7 @@ const ImprovePanel: React.FC = () => {
                 <p>No errors found</p>
             )}
             <Divider />
-            <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} />
+            {/* <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} /> */}
 
             {/* Suggestions Section */}
             <SectionTitle>Suggestions</SectionTitle>
