@@ -1,3 +1,4 @@
+import CodeEditor from "@components/CodeEditor";
 import SignIn from "@components/SignIn";
 import { useAuth } from "@contexts/AuthContext";
 import { RootState } from "@redux/reducers";
@@ -22,20 +23,10 @@ const Home = () => {
         );
     }
 
-    // Adjust the main content width based on the sidebar's state
-    // const contentStyle = {
-    //     marginRight: isCollapsed ? '60px' : '600px',
-    //     transition: 'margin-left 0.3s ease',
-    //     padding: '20px',
-    // };
-
-    // const [showSignUp, setShowSignUp] = useState(false);
-
-    // const toggleSignUp = () => setShowSignUp(!showSignUp);
-
     return (
         <ContentContainer isCollapsed={isCollapsed}>
             {!isAuthenticated && <SignIn onSignUpClick={toggleSignUp} />}
+            {isAuthenticated && <CodeEditor />}
         </ContentContainer>
     );
 };
