@@ -30,7 +30,7 @@ interface ReuseCardProps {
 const ReuseCard: React.FC<ReuseCardProps> = (props) => {
     const handleDelete = async (id: number) => {
         try {
-            await axiosInstance.delete(`/api/Snippets/${props.id}`, {})
+            await axiosInstance.delete(`/Snippets/${props.id}`, {})
         } catch (error) {
             console.error('Error deleting comment:', error);
             alert('Failed to delete comment');
