@@ -17,6 +17,7 @@ export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
   top: 0;
   bottom: 0;
   row-gap: 1em;
+  z-index: 1000;
 `;
 
 export const CollapsedSidebar = styled.div`  /* New styled component for collapsed sidebar */
