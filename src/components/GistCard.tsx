@@ -6,7 +6,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import axiosInstance from "src/utils/axiosInstance";
-
+import { GoLink } from "react-icons/go";
 import {
     StyledAccordion,
     HeaderBox,
@@ -18,19 +18,21 @@ import {
     ContentWrapper
 } from '@styles/ReuseCard'
 
-interface ReuseCardProps {
+interface GistCardProps {
     id: number;
     title: string;
     content: string;
     language: string;
     createdDate: string;
+    url: string;
+    onClick: () => void;
 }
 
 
-const ReuseCard: React.FC<ReuseCardProps> = (props) => {
+const GistCard: React.FC<GistCardProps> = (props) => {
     const handleDelete = async (id: number) => {
         try {
-            await axiosInstance.delete(`/Snippets/${props.id}`, {})
+            await axiosInstance.delete(`/api/Snippets/${props.id}`, {})
         } catch (error) {
             console.error('Error deleting comment:', error);
             alert('Failed to delete comment');
@@ -49,23 +51,19 @@ const ReuseCard: React.FC<ReuseCardProps> = (props) => {
                         {props.title}
                     </TitleTypography>
                     {/*<StyledChip label="Java" />*/}
-                    <DateTypography variant="body2">
-                        {props.createdDate}
-                    </DateTypography>
                 </HeaderBox>
             </AccordionSummary>
             <AccordionDetails>
                 <ContentWrapper>
                     {props.content}
                 </ContentWrapper>
-                <StyledChip label={props.language} />
                 <ButtonBox>
-                    <IconButton
+                    <GoLink
                         aria-label="delete"
-                        onClick={() => handleDelete(props.id)}
+                        onClick={props.onClick}
                     >
                         <StyledDeleteIcon />
-                    </IconButton>
+                    </GoLink>
                 </ButtonBox>
             </AccordionDetails>
         </StyledAccordion>
@@ -73,4 +71,4 @@ const ReuseCard: React.FC<ReuseCardProps> = (props) => {
 };
 
 
-export default ReuseCard;
+export default GistCard;

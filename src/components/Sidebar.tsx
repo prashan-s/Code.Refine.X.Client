@@ -10,6 +10,7 @@ import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
 import SharePanel from '@components/panel/SharePanel';
+import GistPanel from '@components/panel/GistPanel';
 const Sidebar = () => {
     const dispatch = useDispatch();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
@@ -51,7 +52,7 @@ const Sidebar = () => {
                 break;
             case 3:
                 title = 'Share';
-                content = <SharePanel />;
+                content = <GistPanel />;
                 break;
             default:
                 title = 'Select an option';
