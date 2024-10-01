@@ -62,8 +62,8 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
         <SignSection>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <HeadingSection>
-                    <h1>CodeRefineX</h1>
-                    <p>Welcome! Please enter your credentials.</p>
+                    <h1 style={{ textAlign: "center" }}>CodeRefineX</h1>
+                    {/* <p>Welcome! Please enter your credentials.</p> */}
                 </HeadingSection>
                 <TextField
                     label="Email"
@@ -103,7 +103,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
                     <HaveAccountButton onClick={onSignUpClick}>Sign Up</HaveAccountButton>
                 </AccountOption>
             </Form>
-        </SignSection>
+        </SignSection >
     );
 };
 

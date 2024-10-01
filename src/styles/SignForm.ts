@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const HeadingSection = styled.header`
-  padding: 0.5rem 0 1rem 0;
+  padding: 0 0 1rem 0;
 `;
 
 const SignSection = styled.div`
@@ -67,6 +67,7 @@ const SignButton = styled.button`
   margin: 1em 0;
   border-radius: 5px;
   border: 0;
+  color: #000000;
   background: linear-gradient(
     180deg,
     rgba(225, 189, 5, 1) 0%,
@@ -82,7 +83,7 @@ const SignButton = styled.button`
 const AccountOption = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0.3em 0;
+  padding: 0.5em 0;
 `;
 
 const HaveAccountButton = styled.span`

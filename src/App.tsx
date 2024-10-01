@@ -3,6 +3,7 @@ import Spinner from '@components/Spinner';
 import { AuthProvider } from '@contexts/AuthContext';
 import Home from '@pages/Home'
 import { RootState } from '@redux/reducers';
+import { ToastService } from '@utils/toastService';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
@@ -21,6 +22,7 @@ function App() {
           {isAuthenticated && <Sidebar />}
         </div>
         {isLoading && <Spinner />}
+        <ToastService />
       </Router>
     </AuthProvider>
   )
