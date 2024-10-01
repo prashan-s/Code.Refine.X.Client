@@ -15,7 +15,7 @@ export const ProgressBar = styled.div`
 `;
 
 interface ProgressIndicatorProps {
-    score?: number;
+  score?: number;
 }
 
 export const ProgressIndicator = styled.div<ProgressIndicatorProps>`
@@ -62,4 +62,21 @@ export const ProgressCircle = styled.div`
   line-height: 40px;
   font-weight: bold;
   color: #fff;
+`;
+
+export const SuggestionItem = styled.li`
+    list-style-type: none;
+    margin-bottom: 10px;
+    padding: 0;
+
+    a {
+        text-decoration: none;
+        color: #3498db;
+        font-size: 14px;
+
+        &:hover {
+            text-decoration: underline;
+            color: #1f78b4;
+        }
+    }
 `;
