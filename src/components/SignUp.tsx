@@ -1,8 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Form } from "@styles/Form";
-import { motion } from 'framer-motion';
 import { SubmitHandler, useForm } from "react-hook-form";
 import axiosInstance from "src/utils/axiosInstance";
 import {
@@ -11,6 +9,7 @@ import {
     SignButton,
     AccountOption,
     HaveAccountButton,
+    SignHeading,
 } from "@styles/SignForm";
 
 interface SignUpProps {
@@ -66,76 +65,69 @@ const SignUp: React.FC<SignUpProps> = ({ onSignInClick }) => {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.4 }}
-        >
-            <SignSection>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                    <HeadingSection>
-                        <h1 style={{ textAlign: "center" }}>CodeRefineX</h1>
-                        <h5 style={{ textAlign: "center", color: "rgb(115, 115, 115)", margin: 0 }}>Join Us to Enhance Your Code Efficiency and Collaboration. Sign up to Explore Real-Time Optimization and Automated Insights.</h5>
-                    </HeadingSection>
+        <SignSection>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <HeadingSection>
+                    <SignHeading style={{ textAlign: "center" }}>CodeRefineX</SignHeading>
+                    <h5 style={{ textAlign: "center", color: "rgb(115, 115, 115)", margin: 0 }}>Join Us to Enhance Your Code Efficiency and Collaboration. Sign up to Explore Real-Time Optimization and Automated Insights.</h5>
+                </HeadingSection>
 
-                    <TextField
-                        label="First Name"
-                        defaultValue=""
-                        size="small"
-                        fullWidth
-                        {...register("firstName")}
-                        error={!!errors.firstName}
-                        helperText={errors.firstName?.message}
-                        margin="dense"
-                        autoComplete="off"
-                    />
+                <TextField
+                    label="First Name"
+                    defaultValue=""
+                    size="small"
+                    fullWidth
+                    {...register("firstName")}
+                    error={!!errors.firstName}
+                    helperText={errors.firstName?.message}
+                    margin="dense"
+                    autoComplete="off"
+                />
 
-                    <TextField
-                        label="Last Name"
-                        defaultValue=""
-                        size="small"
-                        fullWidth
-                        {...register("lastName")}
-                        error={!!errors.lastName}
-                        helperText={errors.lastName?.message}
-                        margin="dense"
-                        autoComplete="off"
-                    />
+                <TextField
+                    label="Last Name"
+                    defaultValue=""
+                    size="small"
+                    fullWidth
+                    {...register("lastName")}
+                    error={!!errors.lastName}
+                    helperText={errors.lastName?.message}
+                    margin="dense"
+                    autoComplete="off"
+                />
 
-                    <TextField
-                        label="Email"
-                        defaultValue=""
-                        size="small"
-                        fullWidth
-                        {...register("email")}
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
-                        margin="dense"
-                        autoComplete="off"
-                    />
+                <TextField
+                    label="Email"
+                    defaultValue=""
+                    size="small"
+                    fullWidth
+                    {...register("email")}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                    margin="dense"
+                    autoComplete="off"
+                />
 
-                    <TextField
-                        label="Password"
-                        defaultValue=""
-                        size="small"
-                        placeholder="***************"
-                        type="password"
-                        fullWidth
-                        {...register("password")}
-                        error={!!errors.password}
-                        helperText={errors.password?.message}
-                        margin="dense"
-                        autoComplete="off"
-                    />
-                    <SignButton type="submit">Sign Up</SignButton>
-                    <AccountOption>
-                        Have an account?{" "}
-                        <HaveAccountButton onClick={onSignInClick}>Sign in</HaveAccountButton>
-                    </AccountOption>
-                </Form>
-            </SignSection>
-        </motion.div>
+                <TextField
+                    label="Password"
+                    defaultValue=""
+                    size="small"
+                    placeholder="***************"
+                    type="password"
+                    fullWidth
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    margin="dense"
+                    autoComplete="off"
+                />
+                <SignButton type="submit">Sign Up</SignButton>
+                <AccountOption>
+                    Have an account?{" "}
+                    <HaveAccountButton onClick={onSignInClick}>Sign in</HaveAccountButton>
+                </AccountOption>
+            </form>
+        </SignSection>
     );
 };
 

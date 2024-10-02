@@ -4,7 +4,6 @@ import Link from "@mui/material/Link";
 import Checkbox from "@mui/material/Checkbox";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Form } from "@styles/Form";
 import {
     SignSection,
     HeadingSection,
@@ -12,6 +11,7 @@ import {
     SignButton,
     AccountOption,
     HaveAccountButton,
+    SignHeading,
 } from "@styles/SignForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axiosInstance from "src/utils/axiosInstance";
@@ -60,9 +60,9 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
 
     return (
         <SignSection>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <HeadingSection>
-                    <h1 style={{ textAlign: "center" }}>CodeRefineX</h1>
+                    <SignHeading style={{ textAlign: "center" }}>CodeRefineX</SignHeading>
                     {/* <p>Welcome! Please enter your credentials.</p> */}
                 </HeadingSection>
                 <TextField
@@ -102,7 +102,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
                     Don’t have an account?{" "}
                     <HaveAccountButton onClick={onSignUpClick}>Sign Up</HaveAccountButton>
                 </AccountOption>
-            </Form>
+            </form>
         </SignSection >
     );
 };

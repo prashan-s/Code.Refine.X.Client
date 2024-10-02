@@ -6,6 +6,7 @@ const Container = styled.div`
   align-items: center;
   height: 100vh; /* Full height of the viewport */
   background-color: #f0f2f5;
+  backdrop-filter: blur(10px);
 `;
 
 const HeadingSection = styled.header`
@@ -13,9 +14,23 @@ const HeadingSection = styled.header`
 `;
 
 const SignSection = styled.div`
-  max-width: 400px;
+  max-width: 450px;
   min-width: 400px;
   width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+`;
+
+const SignHeading = styled.h1`
+  font-size: 45px;
+  background: linear-gradient(-225deg, #AC32E4 0%, #7918F2 48%, #4801FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 1rem 0;
 `;
 
 const CompanyLogo = styled.div`
@@ -98,6 +113,7 @@ const HaveAccountButton = styled.span`
 export {
   Container,
   HeadingSection,
+  SignHeading,
   SignSection,
   CompanyLogo,
   CompanyLogoImage,
