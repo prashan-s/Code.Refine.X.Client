@@ -7,6 +7,7 @@ import { ContentContainer, FullScreenContainer, HomeScreenContainer, ImageContai
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
+import Footer from "@components/Footer";
 
 const Home = () => {
     // Access the isCollapsed state from Redux
@@ -50,7 +51,7 @@ const Home = () => {
 
                 </FullScreenContainer>
                 <Wave />
-                {/* <Footer /> */}
+                <Footer />
             </HomeScreenContainer>
         );
     }
@@ -58,7 +59,7 @@ const Home = () => {
     return (
         <ContentContainer isCollapsed={isCollapsed}>
             <CodeEditor />
-            {/* <Footer /> */}
+            <Footer />
         </ContentContainer>
     );
 };
