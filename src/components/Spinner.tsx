@@ -1,21 +1,17 @@
 import React from 'react';
-import 'ldrs'; // Make sure this is installed and registered globally
 import { SpinnerOverlay } from '@styles/SpinnerOverlay';
-import { Oval } from 'react-loader-spinner'
+import { CircleSpinner } from "react-spinners-kit";
 
 const Spinner: React.FC = () => {
     return (
         <SpinnerOverlay>
-            <Oval
-                visible={true}
-                height="50"
-                width="50"
-                color="#4fa94d"
-                ariaLabel="oval-loading"
-                strokeWidth={6}
+            <CircleSpinner
+                size={35}      // Adjust the size as per your requirement
+                color="#4801FF" // Adjust the color as per your requirement
+                loading={true}  // Spinner visibility control
             />
         </SpinnerOverlay>
     );
 };
 
-export default Spinner;
+export default Spinner

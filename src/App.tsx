@@ -1,3 +1,4 @@
+import Navbar from '@components/Navbar';
 import Sidebar from '@components/Sidebar'
 import Spinner from '@components/Spinner';
 import { AuthProvider } from '@contexts/AuthContext';
@@ -15,6 +16,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        {!isAuthenticated && <Navbar />}
         <div style={{ display: 'flex' }}>
           <Routes>
             <Route path="/" element={<Home />} />
