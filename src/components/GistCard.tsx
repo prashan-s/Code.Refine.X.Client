@@ -1,18 +1,13 @@
 import {
     AccordionSummary,
-    AccordionDetails,
-    IconButton
+    AccordionDetails
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-import axiosInstance from "src/utils/axiosInstance";
 import { GoLink } from "react-icons/go";
 import {
     StyledAccordion,
     HeaderBox,
     TitleTypography,
-    StyledChip,
-    DateTypography,
     ButtonBox,
     StyledDeleteIcon,
     ContentWrapper
@@ -30,14 +25,14 @@ interface GistCardProps {
 
 
 const GistCard: React.FC<GistCardProps> = (props) => {
-    const handleDelete = async (id: number) => {
-        try {
-            await axiosInstance.delete(`/api/Snippets/${props.id}`, {})
-        } catch (error) {
-            console.error('Error deleting comment:', error);
-            alert('Failed to delete comment');
-        }
-    };
+    // const handleDelete = async (id: number) => {
+    //     try {
+    //         await axiosInstance.delete(`/api/Snippets/${props.id}`, {})
+    //     } catch (error) {
+    //         console.error('Error deleting comment:', error);
+    //         alert('Failed to delete comment');
+    //     }
+    // };
 
     return (
         <StyledAccordion>

@@ -1,16 +1,11 @@
 
 import React from 'react';
-import styled from 'styled-components';
-
 import { HoldingContainer, SideHoldingContainerWrapper } from '@styles/HoldingContainer';
-
 
 interface HoldingContainerProps {
     title?: string;
     selectedComponent: React.ReactNode;
 }
-
-
 
 const SideHoldingContainer: React.FC<HoldingContainerProps> = (props) => {
     return (

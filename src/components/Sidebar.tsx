@@ -5,11 +5,9 @@ import { useState, useEffect } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
 import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
-import snippetAcc from "@components/snippets/SnippetAccording.tsx";
 import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
-import SharePanel from '@components/panel/SharePanel';
 import GistPanel from '@components/panel/GistPanel';
 const Sidebar = () => {
     const dispatch = useDispatch();

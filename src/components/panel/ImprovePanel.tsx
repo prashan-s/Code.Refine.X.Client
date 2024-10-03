@@ -8,52 +8,44 @@ import {
     ScoreText,
     ProgressBar,
     ProgressIndicator,
-    ProgressLabel,
     InsightItem,
     SuggestionItem
 } from '@styles/Improve.Panel';
-import CircularProgress, {
-    CircularProgressProps,
-} from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 import { CodeAnalysisFacade, CodeAnalysisResult, DefaultCodeAnalysisResult } from '@components/codeAnalysis/CodeAnalysisFacade';
-import { TextareaAutosize } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/reducers';
 import axios from 'axios';
 
-
-
-
-function CircularProgressWithLabel(
-    props: CircularProgressProps & { value: number },
-) {
-    return (
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" {...props} />
-            <Box
-                sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography
-                    variant="caption"
-                    component="div"
-                    sx={{ color: 'text.secondary' }}
-                >{`${Math.round(props.value)}%`}</Typography>
-            </Box>
-        </Box>
-    );
-}
+// function CircularProgressWithLabel(
+//     props: CircularProgressProps & { value: number },
+// ) {
+//     return (
+//         <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+//             <CircularProgress variant="determinate" {...props} />
+//             <Box
+//                 sx={{
+//                     top: 0,
+//                     left: 0,
+//                     bottom: 0,
+//                     right: 0,
+//                     position: 'absolute',
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                 }}
+//             >
+//                 <Typography
+//                     variant="caption"
+//                     component="div"
+//                     sx={{ color: 'text.secondary' }}
+//                 >{`${Math.round(props.value)}%`}</Typography>
+//             </Box>
+//         </Box>
+//     );
+// }
 
 const ImprovePanel: React.FC = () => {
 
@@ -89,18 +81,18 @@ const ImprovePanel: React.FC = () => {
     }, [debouncedCode]);
 
 
-    const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInputCode(e.target.value);
-    };
+    // const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    //     setInputCode(e.target.value);
+    // };
 
-    const handleAnalyzeCode = () => {
-        if (inputCode.trim() !== '') {
-            const result = CodeAnalysisFacade.analyzeCode(inputCode);
-            setAnalysisResult(result);
-        } else {
+    // const handleAnalyzeCode = () => {
+    //     if (inputCode.trim() !== '') {
+    //         const result = CodeAnalysisFacade.analyzeCode(inputCode);
+    //         setAnalysisResult(result);
+    //     } else {
 
-        }
-    };
+    //     }
+    // };
 
     const fetchGitHubSuggestions = async (code: string) => {
         try {

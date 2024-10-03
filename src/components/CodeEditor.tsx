@@ -2,25 +2,26 @@ import React, { useEffect, useRef, useState } from 'react';
 import Editor, { useMonaco, OnChange, OnMount } from '@monaco-editor/react';
 import { useDispatch } from 'react-redux';
 import { setEditorCode } from '@redux/reducers/monacoReducer';
+import * as monaco from 'monaco-editor';
 
 const CodeEditor: React.FC = () => {
-    const monaco = useMonaco();
+    const monacoInstance = useMonaco();
     const dispatch = useDispatch();
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
     // State to track syntax errors
-    const [syntaxErrors, setSyntaxErrors] = useState<
+    const [, setSyntaxErrors] = useState<
         { message: string; startLine: number; startColumn: number; endLine: number; endColumn: number }[]
     >([]);
 
     // Configuring Monaco for Java
     useEffect(() => {
-        if (monaco) {
+        if (monacoInstance) {
             // Register Java language in Monaco Editor
-            monaco.languages.register({ id: 'java' });
+            monacoInstance.languages.register({ id: 'java' });
 
             // Set tokenization and highlighting for Java
-            monaco.languages.setMonarchTokensProvider('java', {
+            monacoInstance.languages.setMonarchTokensProvider('java', {
                 tokenizer: {
                     root: [
                         [/\b(public|private|protected)\b/, 'keyword'],
@@ -36,25 +37,33 @@ const CodeEditor: React.FC = () => {
                 },
             });
 
-            monaco.languages.registerCompletionItemProvider('java', {
+            monacoInstance.languages.registerCompletionItemProvider('java', {
                 provideCompletionItems: () => {
+                    const range = {
+                        startLineNumber: 1,
+                        startColumn: 1,
+                        endLineNumber: 1,
+                        endColumn: 1,
+                    };
                     return {
                         suggestions: [
                             {
                                 label: 'System.out.println',
-                                kind: monaco.languages.CompletionItemKind.Function,
+                                kind: monacoInstance.languages.CompletionItemKind.Function,
                                 insertText: 'System.out.println();',
                                 insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                range,
                             },
                             {
                                 label: 'main',
-                                kind: monaco.languages.CompletionItemKind.Snippet,
+                                kind: monacoInstance.languages.CompletionItemKind.Snippet,
                                 insertText: [
                                     'public static void main(String[] args) {',
                                     '\tSystem.out.println("Hello World!");',
                                     '}',
                                 ].join('\n'),
-                                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                insertTextRules: monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                range,
                             },
                         ],
                     };
@@ -62,12 +71,12 @@ const CodeEditor: React.FC = () => {
             });
 
             // Enable syntax validation
-            monaco.editor.setModelLanguage(monaco.editor.getModels()[0], 'java');
+            monacoInstance.editor.setModelLanguage(monacoInstance.editor.getModels()[0], 'java');
         }
-    }, [monaco]);
+    }, [monacoInstance]);
 
     // Handle code changes in the editor
-    const handleEditorChange: OnChange = (value, event) => {
+    const handleEditorChange: OnChange = (value) => {
         console.log('Current code:', value);
         if (value) {
             validateJavaCode(value);
@@ -278,7 +287,7 @@ const CodeEditor: React.FC = () => {
     };
 
     // Save reference to the editor instance on mount
-    const handleEditorDidMount: OnMount = (editor, monacoInstance) => {
+    const handleEditorDidMount: OnMount = (editor) => {
         editorRef.current = editor;
         const currentCode = editor.getValue(); // Get the current editor content
         dispatch(setEditorCode(currentCode)); // Dispatch the initial code to Redux

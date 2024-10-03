@@ -28,7 +28,7 @@ interface ReuseCardProps {
 
 
 const ReuseCard: React.FC<ReuseCardProps> = (props) => {
-    const handleDelete = async (id: number) => {
+    const handleDelete = async () => {
         try {
             await axiosInstance.delete(`/Snippets/${props.id}`, {})
         } catch (error) {
@@ -62,7 +62,7 @@ const ReuseCard: React.FC<ReuseCardProps> = (props) => {
                 <ButtonBox>
                     <IconButton
                         aria-label="delete"
-                        onClick={() => handleDelete(props.id)}
+                        onClick={() => handleDelete()}
                     >
                         <StyledDeleteIcon />
                     </IconButton>

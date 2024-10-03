@@ -6,32 +6,25 @@ import {
 } from '@styles/Common.Panel';
 
 import GistCard from '@components/GistCard';
+import axiosInstance from '@utils/axiosInstance';
 
 const GistPanel: React.FC = () => {
     const [snippets, setSnippets] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://codeanalyser.dulanga.com/api/Gists');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setSnippets(data);
-            } catch (error) {
-                setError(error?.message);
-            } finally {
-                setLoading(false);
+                const response = await axiosInstance.get('/Gists');
+                setSnippets(response.data);
+            } catch (error: any) {
+                setError(error?.message || 'An error occurred while fetching data');
             }
         };
 
         fetchData();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
