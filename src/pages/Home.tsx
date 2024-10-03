@@ -59,7 +59,7 @@ const Home = () => {
     return (
         <ContentContainer isCollapsed={isCollapsed}>
             <CodeEditor />
-            <Footer />
+            {/* <Footer /> */}
         </ContentContainer>
     );
 };
