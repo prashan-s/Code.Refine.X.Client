@@ -3,14 +3,17 @@ import { collapsed, extended } from '@redux/reducers/sideBarReducer';
 import { CollapsedSidebar, Heading, HideButton, HorizontalLine, IconWrapper, LeftPanel, MainContainer, NavItem, RightPanel, SidebarContainer } from '@styles/Sidebar';
 import { useState, useEffect } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
-import { TbMenuOrder, TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
+import { TbMenuOrder, TbLayoutSidebarRightExpandFilled, TbSettings } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
 import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
 import GistPanel from '@components/panel/GistPanel';
+import { useNavigate } from 'react-router-dom';
+
 const Sidebar = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
 
     const [selectedItem, setSelectedItem] = useState<number>(0);
@@ -30,6 +33,11 @@ const Sidebar = () => {
     const handleItemClick = (index: number) => {
         setSelectedItem(index);
     };
+
+    const navigateItemClick = (path: string) => {
+        dispatch(collapsed());
+        navigate(path);
+    }
 
     useEffect(() => {
         let title = '';
@@ -93,6 +101,11 @@ const Sidebar = () => {
                             <PiShareNetwork />
                         </IconWrapper>
                     </NavItem>
+                    <NavItem isSelected={selectedItem === 4} onClick={() => navigateItemClick('/settings')}>
+                        <IconWrapper>
+                            <TbSettings />
+                        </IconWrapper>
+                    </NavItem>
                 </CollapsedSidebar>
             )}
 
@@ -130,6 +143,12 @@ const Sidebar = () => {
                             <PiShareNetwork />
                         </IconWrapper>
                         Share
+                    </NavItem>
+                    <NavItem isSelected={selectedItem === 4} onClick={() => navigateItemClick('/settings')}>
+                        <IconWrapper>
+                            <TbSettings />
+                        </IconWrapper>
+                        Settings
                     </NavItem>
                 </RightPanel>
             </SidebarContainer>
