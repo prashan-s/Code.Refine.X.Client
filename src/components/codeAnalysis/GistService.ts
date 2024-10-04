@@ -2,6 +2,9 @@ class GistService {
 
     public static async createGist(accessToken: string, userCode: string, description: string = '', isPublic: boolean = true): Promise<string | null> {
         try {
+
+            const sanitizedCode: string = userCode.replace(/"/g, '\\"');
+
             const response = await fetch('https://api.github.com/gists', {
                 method: 'POST',
                 headers: {
@@ -13,7 +16,7 @@ class GistService {
                     public: isPublic,
                     files: {
                         'code.js': {
-                            content: userCode,
+                            content: sanitizedCode,
                         },
                     },
                 }),
