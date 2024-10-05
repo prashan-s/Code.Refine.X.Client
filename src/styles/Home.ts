@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const HomeScreenContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* background-color: #f0f2f5; */
   background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
   width: 100%;
   height: 100%;
@@ -13,24 +12,29 @@ export const FullScreenContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Take full viewport height */
+  min-height: 100vh;
   width: 100%;
   position: relative;
   z-index: 1;
-  column-gap: 2rem;
+  gap: 2rem;
 `;
 
 export const ContentContainer = styled.div<{ isCollapsed: boolean }>`
   margin-right: ${(props) => (props.isCollapsed ? "60px" : "600px")};
-  transition: margin-left 0.3s ease;
+  transition: margin-right 0.3s ease;
   padding: 20px;
 `;
 
 export const ImageContainer = styled.div`
   img {
-    max-width: 450px; /* Control image size */
+    max-width: 450px;
     width: 100%;
     height: auto;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
   }
 `;
 
@@ -40,12 +44,52 @@ export const Wave = styled.div`
   width: 100%;
   height: 300px;
   background: url("/src/assets/footer-wave.svg") no-repeat center;
-  /* background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 59.2345C0 59.2345 96.7209 105.041 259.926 105.041C423.131 105.041 558.964 55.7314 676.585 55.7314C794.206 55.7314 900.264 96.9732 1048.53 96.9732C1196.79 96.9732 1200 59.2345 1200 59.2345V121H0V59.2345Z' fill='%23006475'/%3E%3C/svg%3E") no-repeat center; */
   background-size: cover;
 `;
 
-// export const Footer = styled.footer`
-//   width: 100%;
-//   height: 400px;
-//   background-color: #39397f;
-// `;
+export const HeroSectionContainer = styled.div`
+  position: relative;
+  padding-top: 9rem;
+  text-align: center;
+
+  h1 {
+    font-weight: bold;
+    color: #1f2937;
+    font-size: 3.5rem;
+    @media (min-width: 768px) {
+      font-size: 4rem;
+    }
+    @media (min-width: 1280px) {
+      font-size: 5rem;
+    }
+    span {
+      color: #3b82f6;
+    }
+  }
+
+  p {
+    margin-top: 2rem;
+    color: #6b7280;
+  }
+`;
+
+export const HeroButton = styled.button`
+  height: 2.75rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    background-color: #2563eb;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+`;
