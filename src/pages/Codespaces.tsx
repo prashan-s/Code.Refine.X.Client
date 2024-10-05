@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axiosInstance from 'src/utils/axiosInstance';  // Assuming axiosInstance is already configured
 import {
@@ -15,7 +15,9 @@ import {
 import DescriptionIcon from "@mui/icons-material/Description";
 import AddIcon from "@mui/icons-material/Add";
 import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+// import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ButtonBase from '@mui/material/ButtonBase';
+import { formatDistanceToNow } from 'date-fns';
 
 // Define the PageProps and Codespace interface
 interface PageProps {
@@ -26,6 +28,7 @@ interface Codespace {
     id: number;
     projectId: number;
     name: string;
+    createdDate: string;
 }
 
 interface CodeHistory {
@@ -41,28 +44,49 @@ interface CodeHistory {
 const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const location = useLocation();
     const { codespaces } = location.state;
+    const navigate = useNavigate();  // For navigating to the CodeEditor
 
     // State to store the selected codespace ID and its code history
     const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
     const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
-    // Hide sidebar when on the Codespaces page
     useEffect(() => {
         setIsSidebarHidden(true);
-
-        // Cleanup: show sidebar when leaving the Codespaces page
         return () => setIsSidebarHidden(false);
     }, [setIsSidebarHidden]);
 
-    // Function to handle codespace click and fetch code history
+    useEffect(() => {
+        if (codespaces.length > 0) {
+            const sortedCodespaces = [...codespaces].sort(
+                (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+            );
+            const latestCodespace = sortedCodespaces[0];
+            setSelectedFileId(latestCodespace.id);
+            fetchCodeHistory(latestCodespace.id);
+        }
+    }, [codespaces]);
+
     const handleCodespaceClick = async (fileId: number) => {
         setSelectedFileId(fileId);
+        fetchCodeHistory(fileId);
+    };
+
+    const fetchCodeHistory = async (fileId: number) => {
         try {
             const response = await axiosInstance.get(`/CodeHistory/${fileId}`);
-            setCodeHistory(response.data);  // Assuming response data is an array of code history
+            const sortedHistory = response.data.sort(
+                (a: CodeHistory, b: CodeHistory) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+            );
+            setCodeHistory(sortedHistory);
         } catch (error) {
             console.error("Error fetching code history:", error);
         }
+    };
+
+    // Handle version click and navigate to the editor
+    const handleVersionClick = (historyItem: CodeHistory) => {
+        // Navigate to the home page (or editor) with the selected version
+        navigate("/", { state: { selectedHistory: historyItem } });
     };
 
     return (
@@ -80,19 +104,25 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                 </Typography>
 
                 <List>
-                    {codespaces.map((codespace: Codespace, index: number) => (
-                        <ListItemButton key={index} onClick={() => handleCodespaceClick(codespace.id)}>
-                            <StyledIconButton>
-                                <DescriptionIcon />
-                            </StyledIconButton>
-                            <Typography variant="body1" style={{ marginLeft: 10 }}>
-                                {codespace.name}
-                            </Typography>
-                            <FileCount>
-                                <Badge color="primary" badgeContent={2} />
-                            </FileCount>
-                        </ListItemButton>
-                    ))}
+                    {[...codespaces]
+                        .sort((a, b) => b.id - a.id) // Sort by id in descending order
+                        .map((codespace: Codespace, index: number) => (
+                            <ListItemButton
+                                key={index}
+                                active={codespace.id === selectedFileId}
+                                onClick={() => handleCodespaceClick(codespace.id)}
+                            >
+                                <StyledIconButton>
+                                    <DescriptionIcon />
+                                </StyledIconButton>
+                                <Typography variant="body1" style={{ marginLeft: 10 }}>
+                                    {codespace.name}
+                                </Typography>
+                                <FileCount>
+                                    <Badge color="primary" badgeContent={codeHistory.length} />
+                                </FileCount>
+                            </ListItemButton>
+                        ))}
                 </List>
 
                 <Divider />
@@ -115,12 +145,18 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                         <FileList>
                             {codeHistory.length > 0 ? (
                                 codeHistory.map((historyItem) => (
-                                    <FileItem key={historyItem.codeId}>
-                                        <ChevronRightIcon />
-                                        <Typography variant="body1" style={{ marginLeft: 10 }}>
-                                            {historyItem.code} - Version {historyItem.version} ({new Date(historyItem.createdDate).toLocaleString()})
-                                        </Typography>
-                                    </FileItem>
+                                    <ButtonBase key={historyItem.codeId} onClick={() => handleVersionClick(historyItem)}
+                                        style={{ width: "100%", display: "flex" }}>
+                                        <FileItem style={{ width: "100%", display: "flex" }}>
+                                            {/* <StyledChevronIcon /> */}
+                                            <StyledTypography variant="body1">
+                                                {`Version ${historyItem.version}`}
+                                            </StyledTypography>
+                                            <Typography variant="body2" color="#777777" style={{ marginLeft: 'auto' }}>
+                                                {`${formatDistanceToNow(new Date(historyItem.createdDate))} ago`}
+                                            </Typography>
+                                        </FileItem>
+                                    </ButtonBase>
                                 ))
                             ) : (
                                 <Typography variant="body1">No code history available</Typography>
@@ -188,16 +224,49 @@ const CreateButton = styled(Button)`
 
 const FileList = styled.div`
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
 `;
 
+// Styled FileItem Component
 const FileItem = styled.div`
-  margin-bottom: 10px;
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 12px 18px;
+  border-radius: 12px; /* Slightly reduced corner radius for a modern subtle look */
+  background: #f9f9f9; /* Removed gradient for a subtle flat background color */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Softer shadow for subtle depth */
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Enhance shadow on hover for a slight interactive feel */
+    transform: translateY(-2px); /* Subtle lift-up effect for interaction */
+  }
+
+  &:active {
+    transform: translateY(1px); /* Slight depression effect on click */
+  }
+`;
+
+// Styled ChevronRightIcon Component
+// const StyledChevronIcon = styled(ChevronRightIcon)`
+//   color: #6d6d6d;
+//   transition: color 0.2s ease;
+
+//   ${FileItem}:hover & {
+//     color: #2b2b2b;
+//   }
+// `;
+
+// Styled Typography Component
+const StyledTypography = styled(Typography)`
+  font-weight: 500;
+  margin-left: 12px;
+  color: #3a3a3a; /* Darker gray for modern look */
+  user-select: none; /* Disable text selection for better UX */
 `;
 
 const ListItemButton = styled(ListItem) <{ active?: boolean }>`

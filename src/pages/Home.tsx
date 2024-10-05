@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 import Footer from "@components/Footer";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
     // Access the isCollapsed state from Redux
@@ -15,6 +16,8 @@ const Home = () => {
     const { isAuthenticated } = useAuth();
 
     const [showSignUp, setShowSignUp] = useState(false);
+    const location = useLocation(); // Get the location object
+    const selectedHistory = location.state?.selectedHistory; // Access the passed state (CodeHistory)
 
     const toggleSignUp = () => setShowSignUp(!showSignUp);
 
@@ -58,8 +61,9 @@ const Home = () => {
 
     return (
         <ContentContainer isCollapsed={isCollapsed}>
-            <CodeEditor />
+            {/* <CodeEditor /> */}
             {/* <Footer /> */}
+            <CodeEditor selectedHistory={selectedHistory} />
         </ContentContainer>
     );
 };
