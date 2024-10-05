@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
     Box,
@@ -7,8 +7,15 @@ import {
     TextField,
     Typography,
     Divider,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
 } from "@mui/material";
 import { Lock } from "@mui/icons-material";
+import axiosInstance from "@utils/axiosInstance"; // Import axios instance
+import useSessionStorage from "@hooks/useSessionStorage"; // To get the userId from sessionStorage
 
 // MainContent Component
 const MainContent = styled(Box)`
@@ -56,6 +63,20 @@ const PasswordField: React.FC<{ label: string; placeholder: string }> = ({
 );
 
 const SecuritySection = () => {
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false); 
+    const [storedUserId] = useSessionStorage("userId", null); 
+
+    const handleDeleteAccount = async () => {
+        try {
+            await axiosInstance.delete(`/Users/${storedUserId}`);
+            console.log("Account deleted successfully");
+        } catch (error) {
+            console.error("Error deleting account:", error);
+        } finally {
+            setOpenDeleteDialog(false);
+        }
+    };
+
     return (
         <MainContent>
             <Typography variant="h4" component="p" fontWeight="bold" px={2} pb={2}>
@@ -64,7 +85,7 @@ const SecuritySection = () => {
 
             <Divider sx={{ mb: 2 }} />
 
-            {/* Password Section Component - Split this into a separate component in future */}
+            {/* Password Section */}
             <Section>
                 <Typography variant="h6" component="h3" fontWeight="bold" px={2} pb={2}>
                     Password
@@ -80,7 +101,7 @@ const SecuritySection = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Delete Account Section Component - Split this into a separate component in future */}
+            {/* Delete Account Section */}
             <Section>
                 <Typography variant="h6" component="h3" fontWeight="bold" px={2} pb={2}>
                     Delete Account
@@ -89,7 +110,12 @@ const SecuritySection = () => {
                     Once you delete your account, there is no going back. Please be certain.
                 </Typography>
                 <Box px={2} py={3}>
-                    <Button variant="contained" color="error" size="large">
+                    <Button
+                        variant="contained"
+                        color="error"
+                        size="large"
+                        onClick={() => setOpenDeleteDialog(true)} 
+                    >
                         Delete Account
                     </Button>
                 </Box>
@@ -97,7 +123,7 @@ const SecuritySection = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Request Report Section Component - Split this into a separate component in future */}
+            {/* Request Report Section */}
             <Section>
                 <Typography variant="h6" component="h3" fontWeight="bold" px={2} pb={2}>
                     Request Report
@@ -111,8 +137,33 @@ const SecuritySection = () => {
                     </Button>
                 </Box>
             </Section>
-        </MainContent>
-    )
-}
 
-export default SecuritySection
+            {/* Delete Confirmation Dialog */}
+            <Dialog
+                open={openDeleteDialog}
+                onClose={() => setOpenDeleteDialog(false)}
+                aria-labelledby="delete-dialog-title"
+                aria-describedby="delete-dialog-description"
+            >
+                <DialogTitle id="delete-dialog-title">
+                    {"Delete Account"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="delete-dialog-description">
+                        Are you sure you want to delete your account?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+                        No
+                    </Button>
+                    <Button onClick={handleDeleteAccount} color="error" autoFocus>
+                        Yes, Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </MainContent>
+    );
+};
+
+export default SecuritySection;
