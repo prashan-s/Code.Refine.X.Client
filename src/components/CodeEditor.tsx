@@ -4,6 +4,9 @@ import { useDispatch } from 'react-redux';
 import { setEditorCode } from '@redux/reducers/monacoReducer';
 import * as monaco from 'monaco-editor';
 import { debounce } from 'lodash';
+import axiosInstance from '@utils/axiosInstance';
+import { showToast } from '@utils/toastService';
+import useSessionStorage from "@hooks/useSessionStorage";
 
 interface CodeEditorProps {
     height?: string;
@@ -20,6 +23,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     const [editorReloaded, seteditorReloaded] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [isSnippetViewOpen, setSnippetViewOpen] = useState(false);
+    const [snippetTitle, setSnippetTitle] = useState('');
+    const [storedUserId,] = useSessionStorage("userId", null);
+
     const [, setSyntaxErrors] = useState<
         { message: string; startLine: number; startColumn: number; endLine: number; endColumn: number }[]
     >([]);
@@ -35,6 +42,27 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
             'Suggestion 5: Simplify the logic',
         ]);
     };
+
+    const addSnippet = (userID: number, title: string, code: string) => {
+        const snippetData = {
+            userID: userID,
+            snippetTitle: title,
+            snippetContent: code,
+            language: 'java'
+        };
+        console.log('call to add Snippet');
+
+        axiosInstance.post('/snippets', snippetData)
+            .then((response) => {
+                console.log('Snippet saved successfully:', response.data);
+                showToast('success', 'Success', 'Snippet saved successfully');
+            })
+            .catch((error) => {
+                console.error('Error saving snippet:', error);
+                showToast('error', 'Error', 'Failed to save the snippet');
+            });
+    };
+
 
     // Configuring Monaco for Java
     useEffect(() => {
@@ -397,6 +425,20 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                     >
                         Get Suggestions
                     </button>
+                    <button
+                        style={{
+                            background: 'linear-gradient(135deg, #6b73ff, #000dff)',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            transition: 'background 0.3s',
+                        }}
+                        onClick={() => setSnippetViewOpen(true)}
+                    >
+                        Add Snippet
+                    </button>
 
                     {/* Display Suggestions */}
                     {suggestions.length > 0 && (
@@ -406,6 +448,26 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             ))}
                         </ul>
                     )}
+                    {isSnippetViewOpen && (
+                        <div style={{ padding: '8px 0' }}>
+                            <label htmlFor="snippet-title" style={{ fontSize: '14px', padding: '4px 0' }}>Enter Snippet Title:</label>
+                            <input
+                                type="text"
+                                id="snippet-title"
+                                style={{ padding: '4px', margin: '4px 0', fontSize: '14px', width: '100%' }}
+                                placeholder="Snippet Title"
+                                value={snippetTitle}
+                                onChange={(e) => setSnippetTitle(e.target.value)}
+                            />
+                            <button
+                                onClick={() => addSnippet(storedUserId, snippetTitle, "Sample selected code")}
+                                style={{ padding: '8px 12px', marginTop: '8px', fontSize: '14px' }}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    )}
+
                 </div>
             )}
         </div>
