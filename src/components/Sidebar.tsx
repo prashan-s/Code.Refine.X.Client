@@ -9,6 +9,7 @@ import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
 import GistPanel from '@components/panel/GistPanel';
+import FormatPanel from './panel/FormatPanel';
 const Sidebar = () => {
     const dispatch = useDispatch();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
@@ -42,7 +43,8 @@ const Sidebar = () => {
                 break;
             case 1:
                 title = 'Format Content';
-                content = <div>Format Content</div>;
+                content = <FormatPanel />;
+//              content = <div>Format Content</div>;
                 break;
             case 2:
                 title = 'Reuse';
