@@ -191,10 +191,17 @@ const ImprovePanel: React.FC = () => {
                 <span>Conditionals</span>
                 <span>{analysisResult?.metrics.conditionals}</span>
             </InsightItem>
-            {/* <InsightItem>
+            <InsightItem>
                 <span>Has Recursions</span>
                 <span>{analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span>
-            </InsightItem> */}
+            </InsightItem>
+
+            {analysisResult?.metrics?.recursionType !== null && (
+                <InsightItem>
+                    <span>Recursion Type</span>
+                    <span>{analysisResult?.metrics?.recursionType}</span>
+                </InsightItem>
+            )}
 
             <InsightItem>
                 <span>Function Calls</span>

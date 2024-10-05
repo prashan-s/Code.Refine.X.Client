@@ -1,10 +1,12 @@
+
 export interface MetricsAnalysisResult {
     loopCount: number | 0;
     nestedLoopCount: number | 0;
-    hasRecursion: boolean  | false;
-    functionCalls: number  | 0;
-    conditionals: number  | 0;
-    dataStructures: number  | 0;
+    hasRecursion: boolean | false;
+    recursionType: string | null;
+    functionCalls: number | 0;
+    conditionals: number | 0;
+    dataStructures: number | 0;
 }
 export class MetricsAnalyzer {
     static analyzeMetrics(code: string): MetricsAnalysisResult {
@@ -12,12 +14,16 @@ export class MetricsAnalyzer {
         const loopCount = this.countLoops(code);
         const nestedLoopCount = this.countNestedLoops(code);
         const functionNames = this.extractFunctionNames(code);
-        const hasRecursion = this.checkForRecursion(code, functionNames);
+        console.log("XX AllFuntions: \n", functionNames)
+
+        const [hasRecursion, recursionType ] = this.hasRecursion(code, functionNames);
+        console.log("XX hasRecursion: \n", hasRecursion)
+
         const functionCalls = this.countFunctionCalls(code);
         const conditionals = this.countConditionals(code);
         const dataStructures = this.countDataStructures(code);
 
-        return { loopCount, nestedLoopCount, hasRecursion, functionCalls, conditionals, dataStructures };
+        return { loopCount, nestedLoopCount, hasRecursion, recursionType, functionCalls, conditionals, dataStructures };
     }
 
     private static countLoops(code: string): number {
@@ -33,36 +39,68 @@ export class MetricsAnalyzer {
     }
 
     private static extractFunctionNames(code: string): string[] {
+        // Remove single-line and multi-line comments
+        const cleanCode = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
+
         const methodNames: string[] = [];
-        const regex = /\b(?:public|private|protected)?\s*\w+\s+(\w+)\s*\([^)]*\)\s*\{/g;
+        const regex = /\b(?:public|private|protected)?\s*\w+\s+(\w+)\s*\([^)]*\)/g;
         let match;
-        while ((match = regex.exec(code)) !== null) {
+
+        while ((match = regex.exec(cleanCode)) !== null) {
             methodNames.push(match[1]);
         }
-        return methodNames;
+
+        // Remove duplicates by converting the array to a Set and then back to an array
+        return [...new Set(methodNames)];
     }
 
-    private static checkForRecursion(code: string, functionNames: string[]): boolean {
-        // Break the code into individual functions and analyze each function separately
+
+    public static hasRecursion(code: string, functionNames: string[]): [boolean, string | null] {
         for (const functionName of functionNames) {
-            // Create a pattern to isolate the specific function body
-            const functionPattern = new RegExp(`\\b(?:public|private|protected)?\\s*\\w+\\s+${functionName}\\s*\\([^)]*\\)\\s*\\{([^}]+)\\}`, 'gs');
-            let match;
-            while ((match = functionPattern.exec(code)) !== null) {
-                const functionBody = match[1];
-    
-                // Check for recursive calls within the function body
-                const recursionPattern = new RegExp(`\\b${functionName}\\s*\\(`, 'g');
-                if (recursionPattern.test(functionBody)) {
-                    return true;
+            const funcDefRegex = new RegExp(`(public|private|protected)? ?${functionName}.+\\{`, 'g');
+
+            let match: RegExpExecArray | null;
+            while ((match = funcDefRegex.exec(code)) !== null) {
+                const startIndex = match.index + match[0].length - 1;
+                let braceCount = 1;
+                let currentIndex = startIndex;
+                while (braceCount > 0 && currentIndex < code.length - 1) {
+                    currentIndex++;
+                    const char = code[currentIndex];
+                    if (char === '{') braceCount++;
+                    else if (char === '}') braceCount--;
+                }
+                const functionBody = code.substring(startIndex + 1, currentIndex);
+                const callRegex = new RegExp(`\\b(?:this\\.)?${functionName}\\s*\\(`);
+                if (callRegex.test(functionBody)) {
+                    return [true,"Direct Recursion"]; // Direct recursion detected
                 }
             }
         }
-        return false;
+
+        // Build function definitions
+        const functionRegex = /(?:public|private|protected)?\s*(\w+)\s*\(.*?\)\s*\{/g;
+        const functions: { [name: string]: string } = {};
+        let match: RegExpExecArray | null;
+        while ((match = functionRegex.exec(code)) !== null) {
+            const functionName = match[1];
+            const startIndex = match.index + match[0].length - 1;
+            let braceCount = 1;
+            let currentIndex = startIndex;
+            while (braceCount > 0 && currentIndex < code.length - 1) {
+                currentIndex++;
+                const char = code[currentIndex];
+                if (char === '{') braceCount++;
+                else if (char === '}') braceCount--;
+            }
+            const functionBody = code.substring(startIndex + 1, currentIndex);
+            functions[functionName] = functionBody;
+        }
+
+        return [false,null];; // No indirect recursion detected
     }
-    
-    
-    
+
+
     private static countFunctionCalls(code: string): number {
         const functionCalls = (code.match(/\b\w+\s*\(/g) || []).length - this.countLoops(code); // Exclude loop headers
         return functionCalls;

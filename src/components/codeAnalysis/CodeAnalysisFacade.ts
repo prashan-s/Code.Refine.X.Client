@@ -21,6 +21,7 @@ export const DefaultCodeAnalysisResult: CodeAnalysisResult = {
         loopCount: 0,
         nestedLoopCount: 0,
         hasRecursion: false,
+        recursionType: null,
         functionCalls: 0,
         conditionals: 0,
         dataStructures: 0
@@ -39,6 +40,8 @@ export class CodeAnalysisFacade {
         const complexity = ComplexityAnalyzer.calculateComplexity(metrics.loopCount, metrics.nestedLoopCount, metrics.hasRecursion);
         const finalScore = QualityAssessor.assessCodeQuality(syntax, metrics, complexity);
 
+        console.log("type:",metrics.recursionType)
+        console.log("hasRecur:",metrics.hasRecursion)
         return {
             language,
             syntax,
