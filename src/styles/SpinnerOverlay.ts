@@ -8,7 +8,8 @@ export const SpinnerOverlay = styled.header`
   height: 100%;
   z-index: 2;
   /* background-color: rgba(255, 255, 255, 0.1); // Light gray background */
-  background:rgba(255,255,255, 1);
+  background:rgba(255,255,255, 0.3);
+  backdrop-filter: blur(7px);
   display: flex;
   justify-content: center;
   align-items: center;

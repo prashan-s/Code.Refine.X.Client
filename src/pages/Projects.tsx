@@ -66,6 +66,7 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
 
             // Navigate if no projects
             if (projectsData.length === 0) {
+                setIsSidebarHidden(false); // Show the sidebar
                 navigate('/');
             }
         } catch (error) {

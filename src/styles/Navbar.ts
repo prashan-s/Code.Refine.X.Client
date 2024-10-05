@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 // Styled component for Navbar
 export const NavbarContainer = styled.nav`
-  position: fixed;
+  position: sticky;
   z-index: 3;
   width: 100%;
   display: flex;
@@ -11,8 +11,9 @@ export const NavbarContainer = styled.nav`
   align-items: center;
   background-color: white; /* White background */
   color: black; /* Black font color */
-  padding: 1rem 3rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for navbar */
+  padding: 0.3rem 3rem;
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
     cursor: pointer;

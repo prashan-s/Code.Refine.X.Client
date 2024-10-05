@@ -3,18 +3,18 @@ import styled from 'styled-components';
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 70vh;
 `;
 
 export const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
   display: grid;
   grid-template-columns: ${({ isCollapsed }) => (isCollapsed ? '0' : '300px')} ${({ isCollapsed }) => (isCollapsed ? '0' : '300px')};
   transition: grid-template-columns 0.3s ease-in-out;
-  height: 100vh;
+  height: 70vh;
   color: #000;
   position: fixed;
   right: 0;
-  top: 0;
+  top: 60px;
   bottom: 0;
   row-gap: 1em;
   z-index: 1000;

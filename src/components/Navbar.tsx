@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material'; // Material UI components
 import { AccountCircle, Logout } from '@mui/icons-material'; // Material UI icon for profile
 import { Logo, NavbarContainer, NavItems, NavLink } from '@styles/Navbar';
@@ -8,6 +8,7 @@ const Navbar = () => {
     // State for handling dropdown menu
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
     // Handle opening and closing of dropdown
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -19,7 +20,7 @@ const Navbar = () => {
 
     return (
         <NavbarContainer>
-            <Logo>CodeRefineX</Logo>
+            <Logo onClick={() => navigate('/')}>CodeRefineX</Logo>
             <NavItems>
                 <NavLink to="/">Home</NavLink>
                 <NavLink to="/about">About</NavLink>

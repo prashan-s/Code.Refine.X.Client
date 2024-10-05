@@ -86,7 +86,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     // Handle version click and navigate to the editor
     const handleVersionClick = (historyItem: CodeHistory) => {
         // Navigate to the home page (or editor) with the selected version
-        navigate("/", { state: { selectedHistory: historyItem } });
+        navigate("/editor", { state: { selectedHistory: historyItem } });
     };
 
     return (

@@ -18,6 +18,9 @@ import axiosInstance from "src/utils/axiosInstance";
 import { useAuth } from "@contexts/AuthContext";  // Import useAuth from your context
 import { useNavigate } from "react-router-dom";
 import useSessionStorage from "@hooks/useSessionStorage";
+import { useDispatch } from "react-redux";
+import { setIsSidebarHidden } from "@redux/reducers/sideBarReducer";
+import { setProjects } from "@redux/reducers/projectsReducer";
 
 interface SignInProps {
     onSignUpClick: () => void;
@@ -38,8 +41,8 @@ const schema = yup.object({
 const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
     const { login } = useAuth();  // Use login from the useAuth hook
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    // Initialize useSessionStorage hook for userId
     const [storedUserId, setStoredUserId] = useSessionStorage("userId", null);
 
     // Initialize useForm with yupResolver for validation
@@ -50,6 +53,21 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
     } = useForm<IFormInputs>({
         resolver: yupResolver(schema),
     });
+
+    const fetchProjects = async (userId: string) => {
+        try {
+            const response = await axiosInstance.get(`/Users/${userId}/projects`);
+            const projectsData = response.data.projects;
+
+            // Update the Redux store with fetched projects
+            dispatch(setProjects(projectsData));
+
+            return projectsData;
+        } catch (err) {
+            console.error("Error fetching projects:", err);
+            return [];
+        }
+    };
 
     // Handle form submission
     const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
@@ -64,8 +82,17 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
             // Store the userId in session storage
             setStoredUserId(userId);
 
-            // After successful sign-in, navigate to the projects page
-            navigate('/projects');
+            // Fetch user's projects after login
+            const projects = await fetchProjects(userId);
+
+            // Check if the user has more than 0 projects
+            if (projects.length > 0) {
+                dispatch(setIsSidebarHidden(true)); // Hide the sidebar
+                navigate('/projects');
+            } else {
+                dispatch(setIsSidebarHidden(false)); // Show the sidebar
+                navigate('/editor');
+            }
         } catch (err: any) {
             console.error("Login failed:", err);
         }

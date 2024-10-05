@@ -1,18 +1,19 @@
 import { RootState } from '@redux/reducers';
-import { collapsed, extended } from '@redux/reducers/sideBarReducer';
+import { collapsed, extended, setIsSidebarHidden } from '@redux/reducers/sideBarReducer';
 import { CollapsedSidebar, Heading, HideButton, HorizontalLine, IconWrapper, LeftPanel, MainContainer, NavItem, RightPanel, SidebarContainer } from '@styles/Sidebar';
 import { useState, useEffect } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
 import { TbMenuOrder, TbLayoutSidebarRightExpandFilled, TbSettings, TbLogout } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
-import SideHoldingContainer from "@components/common/SideHoldingContainer"
-import ImprovePanel from "@components/panel/ImprovePanel"
-import ReusePanel from "@components/panel/ReusePanel"
+import SideHoldingContainer from "@components/common/SideHoldingContainer";
+import ImprovePanel from "@components/panel/ImprovePanel";
+import ReusePanel from "@components/panel/ReusePanel";
 import GistPanel from '@components/panel/GistPanel';
 import { useNavigate } from 'react-router-dom';
 import ReorderPanel from '@components/panel/ReorderPanel';
-import {BlockCategory} from '@components/panel/ReorderPanel';
+import { BlockCategory } from '@components/panel/ReorderPanel';
 import { useAuth } from '@contexts/AuthContext';
+import useSessionStorage from '@hooks/useSessionStorage';
 
 const Sidebar = () => {
     const dispatch = useDispatch();
@@ -25,6 +26,9 @@ const Sidebar = () => {
         title: '',
         content: <div>Select an option to view content</div>,
     });
+    const [storedUserId,] = useSessionStorage("userId", null);
+    const [projects, setProjects] = useState([]); // State to store the fetched projects
+    const [isLoading, setIsLoading] = useState(true); // Add loading state to control rendering
 
     const defaultBlocks: BlockCategory = {
         static: ['defaultStaticBlock1', 'defaultStaticBlock2'],
@@ -63,19 +67,16 @@ const Sidebar = () => {
                 content = <ImprovePanel />;
                 break;
             case 1:
-   
-
                 title = 'Format Content';
                 content = <ReorderPanel
-                blocks={defaultBlocks} // Or pass a different BlockCategory object
-                onReorder={(newBlocks: BlockCategory) => {
-                  console.log('XX Reordered blocks: ', newBlocks);
-                }}
-                setMonacoValue={(value: string) => {
-                  console.log('XX Monaco Editor Value Set: ', value);
-                }}
-              />
-                //              content = <div>Format Content</div>;
+                    blocks={defaultBlocks} // Or pass a different BlockCategory object
+                    onReorder={(newBlocks: BlockCategory) => {
+                        console.log('XX Reordered blocks: ', newBlocks);
+                    }}
+                    setMonacoValue={(value: string) => {
+                        console.log('XX Monaco Editor Value Set: ', value);
+                    }}
+                />;
                 break;
             case 2:
                 title = 'Reuse';

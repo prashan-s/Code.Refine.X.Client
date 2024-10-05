@@ -24,6 +24,8 @@ export const ContentContainer = styled.div<{ isCollapsed: boolean }>`
   margin-right: ${(props) => (props.isCollapsed ? "60px" : "600px")};
   transition: margin-left 0.3s ease;
   padding: 20px;
+  background-color: white;
+  width: 100%;
 `;
 
 export const ImageContainer = styled.div`
