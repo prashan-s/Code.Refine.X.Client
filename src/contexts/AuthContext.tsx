@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import useLocalStorage from '@hooks/useSessionStorage';
+import useSessionStorage from '@hooks/useSessionStorage';
 import { setAuthenticated } from '@redux/reducers/authReducer';
 
 interface AuthContextType {
@@ -21,7 +21,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [token, setToken, removeToken] = useLocalStorage('token', null);
+    const [token, setToken, removeToken] = useSessionStorage('token', null);
     const [isAuthenticated, setIsAuthenticated] = useState(!!token);
     const dispatch = useDispatch();
 

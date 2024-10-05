@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
+import axiosInstance from 'src/utils/axiosInstance';  // Assuming axiosInstance is already configured
 import {
     Button,
     List,
@@ -27,9 +28,23 @@ interface Codespace {
     name: string;
 }
 
+interface CodeHistory {
+    codeId: number;
+    fileID: number;
+    code: string;
+    analysisResult: string;
+    language: string;
+    createdDate: string;
+    version: number;
+}
+
 const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const location = useLocation();
     const { codespaces } = location.state;
+
+    // State to store the selected codespace ID and its code history
+    const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
+    const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
     // Hide sidebar when on the Codespaces page
     useEffect(() => {
@@ -38,6 +53,17 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
         // Cleanup: show sidebar when leaving the Codespaces page
         return () => setIsSidebarHidden(false);
     }, [setIsSidebarHidden]);
+
+    // Function to handle codespace click and fetch code history
+    const handleCodespaceClick = async (fileId: number) => {
+        setSelectedFileId(fileId);
+        try {
+            const response = await axiosInstance.get(`/CodeHistory/${fileId}`);
+            setCodeHistory(response.data);  // Assuming response data is an array of code history
+        } catch (error) {
+            console.error("Error fetching code history:", error);
+        }
+    };
 
     return (
         <AppContainer>
@@ -55,7 +81,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
 
                 <List>
                     {codespaces.map((codespace: Codespace, index: number) => (
-                        <ListItemButton key={index}>
+                        <ListItemButton key={index} onClick={() => handleCodespaceClick(codespace.id)}>
                             <StyledIconButton>
                                 <DescriptionIcon />
                             </StyledIconButton>
@@ -80,38 +106,28 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
             </Sidebar>
 
             <MainContent>
-                <Typography variant="h4" gutterBottom>
-                    {codespaces[0]?.name || "No Codespace Selected"}
-                </Typography>
-
-                <Typography variant="body1" style={{ marginBottom: 10 }}>
-                    {codespaces.length} files, 2 pull requests
-                </Typography>
-
-                <OpenButton variant="contained" color="primary">
-                    Open in GitHub
-                </OpenButton>
-
-                <FileList>
-                    <FileItem>
-                        <ChevronRightIcon />
-                        <Typography variant="body1" style={{ marginLeft: 10 }}>
-                            main.ts - Renamed file (10 minutes ago)
+                {selectedFileId && (
+                    <>
+                        <Typography variant="h4" gutterBottom>
+                            Code History for Codespace {selectedFileId}
                         </Typography>
-                    </FileItem>
-                    <FileItem>
-                        <ChevronRightIcon />
-                        <Typography variant="body1" style={{ marginLeft: 10 }}>
-                            logo.svg - New file (10 minutes ago)
-                        </Typography>
-                    </FileItem>
-                    <FileItem>
-                        <ChevronRightIcon />
-                        <Typography variant="body1" style={{ marginLeft: 10 }}>
-                            index.html - New file (10 minutes ago)
-                        </Typography>
-                    </FileItem>
-                </FileList>
+
+                        <FileList>
+                            {codeHistory.length > 0 ? (
+                                codeHistory.map((historyItem) => (
+                                    <FileItem key={historyItem.codeId}>
+                                        <ChevronRightIcon />
+                                        <Typography variant="body1" style={{ marginLeft: 10 }}>
+                                            {historyItem.code} - Version {historyItem.version} ({new Date(historyItem.createdDate).toLocaleString()})
+                                        </Typography>
+                                    </FileItem>
+                                ))
+                            ) : (
+                                <Typography variant="body1">No code history available</Typography>
+                            )}
+                        </FileList>
+                    </>
+                )}
             </MainContent>
         </AppContainer>
     );
@@ -168,10 +184,6 @@ const CreateButton = styled(Button)`
   align-items: center;
   padding: 10px;
   border-radius: 8px;
-`;
-
-const OpenButton = styled(Button)`
-  margin-bottom: 20px;
 `;
 
 const FileList = styled.div`

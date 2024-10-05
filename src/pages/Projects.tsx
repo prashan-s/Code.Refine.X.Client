@@ -6,6 +6,7 @@ import { Container, Grid, Typography, Box, TextField, Button } from "@mui/materi
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import { formatDistanceToNow } from 'date-fns';  // Import the date formatting function
+import useSessionStorage from '@hooks/useSessionStorage';
 
 interface PageProps {
     setIsSidebarHidden: (hidden: boolean) => void;
@@ -29,6 +30,9 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
     const [codespaces, setCodespaces] = useState<Codespace[]>([]);
     const navigate = useNavigate();
 
+    // Fetch userId from session storage
+    const [storedUserId] = useSessionStorage("userId", null);
+
     // Hide sidebar when on the Projects page
     useEffect(() => {
         setIsSidebarHidden(true);
@@ -40,7 +44,12 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
     // Fetch projects and map files to codespaces
     const fetchProjectsAndCodespaces = async () => {
         try {
-            const projectsResponse = await axiosInstance.get('/Users/1/projects');
+            if (!storedUserId) {
+                console.error("No userId found in session storage");
+                return;
+            }
+
+            const projectsResponse = await axiosInstance.get(`/Users/${storedUserId}/projects`);
             const projectsData = projectsResponse.data.projects;
 
             // Map files in projects to codespaces
@@ -114,7 +123,10 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
                                     {project.projectName}
                                 </Typography>
                                 <Typography variant="body2" color="#777777" mt={1}>
-                                    {`${project.description}, ${formatDistanceToNow(new Date(project.createdDate))} ago`}
+                                    {`${project.description}`}
+                                </Typography>
+                                <Typography variant="body2" color="#777777" mt={1}>
+                                    {`${formatDistanceToNow(new Date(project.createdDate))} ago`}
                                 </Typography>
                             </StyledProjectCard>
                         </Grid>
