@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Button, TextField, Select, MenuItem, Typography, Box, Card, CardContent, CircularProgress, Avatar as MUIAvatar, IconButton, Divider } from "@mui/material";
+import { Button, TextField, Typography, Box, Card, CardContent, CircularProgress, Avatar as MUIAvatar, IconButton, Divider } from "@mui/material";
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import axiosInstance from '@utils/axiosInstance';
+import useSessionStorage from "@hooks/useSessionStorage";
 
 const MainContent = styled(Box)`
   display: flex;
@@ -65,7 +67,6 @@ const ProgressContainer = styled.div`
 const ProfileEditForm = styled.form`
   display: flex;
   flex-direction: column;
-  /* gap: 24px; */
 `;
 
 const ButtonContainer = styled.div`
@@ -77,11 +78,31 @@ const ButtonContainer = styled.div`
 
 const ProfileSection = () => {
 
-    const [firstName, setFirstName] = useState("Samarathunge");
-    const [lastName, setLastName] = useState("M P C");
-    const [country, setCountry] = useState("Sri Lanka");
-    const [role, setRole] = useState("Developer");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [role, setRole] = useState("");
     const [profileImage, setProfileImage] = useState("https://via.placeholder.com/150");
+    const [loading, setLoading] = useState(false);
+    const [storedUserId, ] = useSessionStorage("userId", null);
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const response = await axiosInstance.get(`/Users/${storedUserId}`);
+                const userData = response.data;
+                
+                // Set user details from API response
+                setFirstName(userData.firstName || "");
+                setLastName(userData.lastName || "");
+                setRole(userData.role || "");
+                setProfileImage(userData.profileImage || "https://via.placeholder.com/150");
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+            }
+        };
+
+        fetchUserDetails();
+    }, [storedUserId]);
 
     const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -92,6 +113,25 @@ const ProfileSection = () => {
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
+        }
+    };
+
+    const handleSave = async () => {
+        setLoading(true); 
+        try {
+            const payload = {
+                firstName,
+                lastName,
+                role,
+                profileImage
+            };
+
+            const response = await axiosInstance.put(`/Users/${storedUserId}`, payload);
+            console.log('Profile updated successfully:', response.data);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -124,19 +164,13 @@ const ProfileSection = () => {
                         </ProfileImageContainer>
                         <TextField label="First name" variant="outlined" fullWidth margin="normal" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                         <TextField label="Last name" variant="outlined" fullWidth margin="normal" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                        <Select fullWidth variant="outlined" value={country} onChange={(e) => setCountry(e.target.value)}>
-                            <MenuItem value="Sri Lanka">Sri Lanka</MenuItem>
-                            <MenuItem value="United States">United States</MenuItem>
-                            <MenuItem value="Canada">Canada</MenuItem>
-                            <MenuItem value="Australia">Australia</MenuItem>
-                        </Select>
                         <TextField label="Role" variant="outlined" placeholder="Developer" fullWidth margin="normal" value={role} onChange={(e) => setRole(e.target.value)} />
                     </ProfileEditForm>
 
                     <ButtonContainer>
                         <Button variant="outlined" color="secondary">Cancel</Button>
-                        <Button variant="contained" color="primary">
-                            Save
+                        <Button variant="contained" color="primary" onClick={handleSave} disabled={loading}>
+                            {loading ? "Saving..." : "Save"}
                         </Button>
                     </ButtonContainer>
                 </ProfileEditSection>
@@ -183,7 +217,7 @@ const ProfileSection = () => {
                 </StatsSection>
             </ContentWrapper>
         </MainContent>
-    )
-}
+    );
+};
 
-export default ProfileSection
+export default ProfileSection;
