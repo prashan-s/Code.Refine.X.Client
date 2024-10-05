@@ -10,7 +10,8 @@ import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
 import GistPanel from '@components/panel/GistPanel';
 import { useNavigate } from 'react-router-dom';
-import FormatPanel from './panel/FormatPanel';
+import ReorderPanel from '@components/panel/ReorderPanel';
+import {BlockCategory} from '@components/panel/ReorderPanel';
 import { useAuth } from '@contexts/AuthContext';
 
 const Sidebar = () => {
@@ -24,6 +25,12 @@ const Sidebar = () => {
         title: '',
         content: <div>Select an option to view content</div>,
     });
+
+    const defaultBlocks: BlockCategory = {
+        static: ['defaultStaticBlock1', 'defaultStaticBlock2'],
+        public: ['defaultPublicBlock1', 'defaultPublicBlock2'],
+        private: ['defaultPrivateBlock1', 'defaultPrivateBlock2'],
+    };
 
     const toggleSidebar = () => {
         if (isCollapsed) {
@@ -56,8 +63,18 @@ const Sidebar = () => {
                 content = <ImprovePanel />;
                 break;
             case 1:
+   
+
                 title = 'Format Content';
-                content = <FormatPanel />;
+                content = <ReorderPanel
+                blocks={defaultBlocks} // Or pass a different BlockCategory object
+                onReorder={(newBlocks: BlockCategory) => {
+                  console.log('XX Reordered blocks: ', newBlocks);
+                }}
+                setMonacoValue={(value: string) => {
+                  console.log('XX Monaco Editor Value Set: ', value);
+                }}
+              />
                 //              content = <div>Format Content</div>;
                 break;
             case 2:
