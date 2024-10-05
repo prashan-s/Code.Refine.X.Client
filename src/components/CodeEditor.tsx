@@ -23,9 +23,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     const [editorReloaded, seteditorReloaded] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const [selectedCode, setSelectedCode] = useState('');
-    const [suggestions, setSuggestions] = useState<string[]>([]);
     const [isSugessionViewOpen, setSugessionViewOpen] = useState(false);
     const [isSnippetViewOpen, setSnippetViewOpen] = useState(false);
+    const [isGistShareViewOpen, setGistShareViewOpen] = useState(false);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
     const [snippetTitle, setSnippetTitle] = useState('');
     const [storedUserId,] = useSessionStorage("userId", null);
 
@@ -45,6 +46,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
         ]);
     };
 
+    const gistShare = (userID: number, code: string) => {
+        const gistData = {
+            userID: userID,
+            snippetContent: code,
+        };
+        console.log('call to gistShare method', gistData);
+
+    };
     const addSnippet = (userID: number, title: string, code: string) => {
         const snippetData = {
             userID: userID,
@@ -430,7 +439,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             width: '100%',
                         }}
                         // onClick={loadDummySuggestions}
-                        onClick={() => { loadDummySuggestions() ; setSugessionViewOpen(true); setSnippetViewOpen(false) }}
+                        onClick={() => { loadDummySuggestions(); setSugessionViewOpen(true); setSnippetViewOpen(false); setGistShareViewOpen(false) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
@@ -447,22 +456,40 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             transition: 'background 0.3s, transform 0.2s',
                             width: '100%',
                         }}
-                        onClick={() => { setSnippetViewOpen(true); setSugessionViewOpen(false) }}
+                        onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(true); setSugessionViewOpen(false) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
                         Add Snippet
                     </button>
+                    <button
+                        style={{
+                            background: 'linear-gradient(135deg, #76c7c0, #42a5f5)',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '10px 16px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            transition: 'background 0.3s, transform 0.2s',
+                            width: '100%',
+                        }}
+                        onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
+                        onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                        onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                        Share to GIST
+                    </button>
 
                     {/* Display Suggestions */}
-                    {suggestions.length > 0 && !isSnippetViewOpen && (
+                    {suggestions.length > 0 && !isSnippetViewOpen && !isGistShareViewOpen && (
                         <ul style={{ listStyleType: 'none', padding: '12px 0', margin: 0 }}>
                             {suggestions.map((suggestion, index) => (
                                 <li key={index} style={{ padding: '6px 0', fontSize: '14px', color: '#616161' }}>{suggestion}</li>
                             ))}
                         </ul>
                     )}
-                    {isSnippetViewOpen && !isSugessionViewOpen &&(
+                    {/* Display Snippets */}
+                    {isSnippetViewOpen && !isSugessionViewOpen && !isGistShareViewOpen && (
                         <div style={{ padding: '12px 0' }}>
                             <label htmlFor="snippet-title" style={{ fontSize: '14px', color: '#424242', padding: '6px 0' }}>Enter Snippet Title:</label>
                             <input
@@ -501,6 +528,32 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                                 onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Save
+                            </button>
+                        </div>
+                    )}
+                    {/* Display gist share */}
+                    {isGistShareViewOpen && !isSugessionViewOpen && !isSnippetViewOpen && (
+                        <div style={{ padding: '12px 0' }}>
+                            <label htmlFor="snippet-title" style={{ fontSize: '14px', color: '#424242', padding: '6px 0' }}>Share gist</label>
+
+                            <button
+                                onClick={() => gistShare(storedUserId, selectedCode)}
+                                style={{
+                                    padding: '10px 16px',
+                                    marginTop: '8px',
+                                    fontSize: '14px',
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #76c7c0, #42a5f5)',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'background 0.3s, transform 0.2s',
+                                    width: '100%',
+                                }}
+                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                Share
                             </button>
                         </div>
                     )}
