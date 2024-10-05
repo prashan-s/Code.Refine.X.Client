@@ -12,9 +12,11 @@ interface CodeEditorProps {
     height?: string;
     width?: string;
     selectedHistory?: { code: string }; // Add optional prop for selected CodeHistory
+    onCodeChange?: (code: string) => void; // New prop to pass code changes
+    onInitialMount?: (code: string) => void; // Prop to pass the initial mounted code
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw', selectedHistory }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw', selectedHistory, onCodeChange, onInitialMount }) => {
     const monacoInstance = useMonaco();
     const dispatch = useDispatch();
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -172,12 +174,16 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     // Handle editor mount
     const handleEditorDidMount: OnMount = (editor) => {
         editorRef.current = editor;
+        const initialCode = editor.getValue();
         seteditorReloaded(!editorReloaded);
         dispatch(setEditorCode(editor.getValue()));
 
         // If there's a selected history passed in props, set it in the editor
         if (selectedHistory && selectedHistory.code) {
             editor.setValue(selectedHistory.code);
+        } else if (onInitialMount) {
+            // **Modification: Use onInitialMount to pass the initial editor code**
+            onInitialMount(initialCode); // This will pass the initial mounted code to the parent
         }
     };
 
@@ -188,6 +194,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
             console.log('XX :>> ', value);
             validateJavaCode(value);
             dispatch(setEditorCode(value));
+            if (onCodeChange) {
+                onCodeChange(value); // Pass the code back to the parent component
+            }
         }
     };
 
