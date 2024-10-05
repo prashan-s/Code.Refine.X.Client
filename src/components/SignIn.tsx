@@ -17,6 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axiosInstance from "src/utils/axiosInstance";
 import { useAuth } from "@contexts/AuthContext";  // Import useAuth from your context
 import { useNavigate } from "react-router-dom";
+import useSessionStorage from "@hooks/useSessionStorage";
 
 interface SignInProps {
     onSignUpClick: () => void;
@@ -38,6 +39,9 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
     const { login } = useAuth();  // Use login from the useAuth hook
     const navigate = useNavigate();
 
+    // Initialize useSessionStorage hook for userId
+    const [storedUserId, setStoredUserId] = useSessionStorage("userId", null);
+
     // Initialize useForm with yupResolver for validation
     const {
         register,
@@ -52,9 +56,13 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
         try {
             const response = await axiosInstance.post("/users/authenticate", data);
             const token = response.data.token;
+            const userId = response.data.userId;
 
             // Call the login method from useAuth to save the token
             login(token);
+
+            // Store the userId in session storage
+            setStoredUserId(userId);
 
             // After successful sign-in, navigate to the projects page
             navigate('/projects');
