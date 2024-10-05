@@ -16,6 +16,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import axiosInstance from "src/utils/axiosInstance";
 import { useAuth } from "@contexts/AuthContext";  // Import useAuth from your context
+import { useNavigate } from "react-router-dom";
 
 interface SignInProps {
     onSignUpClick: () => void;
@@ -35,6 +36,7 @@ const schema = yup.object({
 
 const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
     const { login } = useAuth();  // Use login from the useAuth hook
+    const navigate = useNavigate();
 
     // Initialize useForm with yupResolver for validation
     const {
@@ -53,6 +55,9 @@ const SignIn: React.FC<SignInProps> = ({ onSignUpClick }) => {
 
             // Call the login method from useAuth to save the token
             login(token);
+
+            // After successful sign-in, navigate to the projects page
+            navigate('/projects');
         } catch (err: any) {
             console.error("Login failed:", err);
         }

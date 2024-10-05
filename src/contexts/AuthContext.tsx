@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import useLocalStorage from '@hooks/useLocalStorage';
+import useLocalStorage from '@hooks/useSessionStorage';
 import { setAuthenticated } from '@redux/reducers/authReducer';
 
 interface AuthContextType {
