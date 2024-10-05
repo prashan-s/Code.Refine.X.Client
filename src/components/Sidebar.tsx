@@ -3,19 +3,21 @@ import { collapsed, extended } from '@redux/reducers/sideBarReducer';
 import { CollapsedSidebar, Heading, HideButton, HorizontalLine, IconWrapper, LeftPanel, MainContainer, NavItem, RightPanel, SidebarContainer } from '@styles/Sidebar';
 import { useState, useEffect } from 'react';
 import { PiLightbulbFilament, PiRecycleFill, PiShareNetwork } from "react-icons/pi";
-import { TbMenuOrder, TbLayoutSidebarRightExpandFilled, TbSettings } from "react-icons/tb";
+import { TbMenuOrder, TbLayoutSidebarRightExpandFilled, TbSettings, TbLogout } from "react-icons/tb";
 import { useDispatch, useSelector } from 'react-redux';
 import SideHoldingContainer from "@components/common/SideHoldingContainer"
 import ImprovePanel from "@components/panel/ImprovePanel"
 import ReusePanel from "@components/panel/ReusePanel"
 import GistPanel from '@components/panel/GistPanel';
 import { useNavigate } from 'react-router-dom';
-
 import FormatPanel from './panel/FormatPanel';
+import { useAuth } from '@contexts/AuthContext';
+
 const Sidebar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
+    const { logout } = useAuth();
 
     const [selectedItem, setSelectedItem] = useState<number>(0);
     const [contentData, setContentData] = useState<{ title: string; content: React.ReactNode }>({
@@ -40,6 +42,10 @@ const Sidebar = () => {
         navigate(path);
     }
 
+    const handleLogout = () => {
+        logout();
+    }
+
     useEffect(() => {
         let title = '';
         let content: React.ReactNode;
@@ -52,7 +58,7 @@ const Sidebar = () => {
             case 1:
                 title = 'Format Content';
                 content = <FormatPanel />;
-//              content = <div>Format Content</div>;
+                //              content = <div>Format Content</div>;
                 break;
             case 2:
                 title = 'Reuse';
@@ -108,6 +114,11 @@ const Sidebar = () => {
                             <TbSettings />
                         </IconWrapper>
                     </NavItem>
+                    <NavItem isSelected={selectedItem === 5} onClick={handleLogout}>
+                        <IconWrapper>
+                            <TbLogout />
+                        </IconWrapper>
+                    </NavItem>
                 </CollapsedSidebar>
             )}
 
@@ -151,6 +162,12 @@ const Sidebar = () => {
                             <TbSettings />
                         </IconWrapper>
                         Settings
+                    </NavItem>
+                    <NavItem isSelected={selectedItem === 5} onClick={handleLogout}>
+                        <IconWrapper>
+                            <TbLogout />
+                        </IconWrapper>
+                        Logout
                     </NavItem>
                 </RightPanel>
             </SidebarContainer>

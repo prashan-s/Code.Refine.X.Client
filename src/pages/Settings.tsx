@@ -15,7 +15,6 @@ import ActivitySection from '@components/settings/ActivitySection';
 import ProfileSection from '@components/settings/ProfileSection';
 import PersonalizationSection from '@components/settings/PersonalizationSection';
 import APISection from '@components/settings/APISection';
-import TeamSection from '@components/settings/TeamSection';
 import { useNavigate } from 'react-router-dom';
 import SecuritySection from '@components/settings/SecuritySection';
 import MemberSection from '@components/settings/MemberSection';
