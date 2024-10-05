@@ -3,6 +3,7 @@ import Sidebar from '@components/Sidebar'
 import Spinner from '@components/Spinner';
 import { AuthProvider } from '@contexts/AuthContext';
 import Home from '@pages/Home'
+import SettingsPage from '@pages/Settings';
 import { RootState } from '@redux/reducers';
 import { ToastService } from '@utils/toastService';
 import { useSelector } from 'react-redux';
@@ -20,6 +21,7 @@ function App() {
         <div style={{ display: 'flex' }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
           {isAuthenticated && <Sidebar />}
         </div>
