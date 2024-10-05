@@ -26,6 +26,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const [selectedCode, setSelectedCode] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [isSugessionViewOpen, setSugessionViewOpen] = useState(false);
     const [isSnippetViewOpen, setSnippetViewOpen] = useState(false);
     const [snippetTitle, setSnippetTitle] = useState('');
     const [storedUserId,] = useSessionStorage("userId", null);
@@ -437,7 +438,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             marginBottom: '8px',
                             width: '100%',
                         }}
-                        onClick={loadDummySuggestions}
+                        // onClick={loadDummySuggestions}
+                        onClick={() => { loadDummySuggestions() ; setSugessionViewOpen(true); setSnippetViewOpen(false) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
@@ -454,7 +456,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             transition: 'background 0.3s, transform 0.2s',
                             width: '100%',
                         }}
-                        onClick={() => setSnippetViewOpen(true)}
+                        onClick={() => { setSnippetViewOpen(true); setSugessionViewOpen(false) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
@@ -462,14 +464,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                     </button>
 
                     {/* Display Suggestions */}
-                    {suggestions.length > 0 && (
+                    {suggestions.length > 0 && !isSnippetViewOpen && (
                         <ul style={{ listStyleType: 'none', padding: '12px 0', margin: 0 }}>
                             {suggestions.map((suggestion, index) => (
                                 <li key={index} style={{ padding: '6px 0', fontSize: '14px', color: '#616161' }}>{suggestion}</li>
                             ))}
                         </ul>
                     )}
-                    {isSnippetViewOpen && (
+                    {isSnippetViewOpen && !isSugessionViewOpen &&(
                         <div style={{ padding: '12px 0' }}>
                             <label htmlFor="snippet-title" style={{ fontSize: '14px', color: '#424242', padding: '6px 0' }}>Enter Snippet Title:</label>
                             <input
