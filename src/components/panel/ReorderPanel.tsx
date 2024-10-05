@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper, Button } from '@mui/material';
 import styled from 'styled-components';
 
 export interface BlockCategory {
@@ -27,7 +27,7 @@ const Container = styled(Paper)`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 `;
 
-const DraggableItem = styled(Box)<DraggableItemProps>`
+const DraggableItem = styled(Box) <DraggableItemProps>`
   user-select: none;
   padding: 16px;
   margin-bottom: 12px;
@@ -71,6 +71,16 @@ const ReorderPanel: React.FC<ReorderPanelProps> = ({ blocks, onReorder, setMonac
     }
 
     // Update the Monaco editor instance with the reordered blocks
+    const newCode = [
+      ...blocks.static,
+      ...blocks.public,
+      ...blocks.private,
+    ].join('\n\n');
+    setMonacoValue(newCode);
+  };
+
+  // Function to handle saving the reordered code
+  const handleSave = () => {
     const newCode = [
       ...blocks.static,
       ...blocks.public,
@@ -124,6 +134,10 @@ const ReorderPanel: React.FC<ReorderPanelProps> = ({ blocks, onReorder, setMonac
           )}
         </Droppable>
       ))}
+      {/* Save Button */}
+      <Button variant="contained" color="primary" onClick={handleSave}>
+        Save
+      </Button>
     </DragDropContext>
   );
 };

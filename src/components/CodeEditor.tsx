@@ -22,6 +22,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     const [showPopup, setShowPopup] = useState(false);
     const [editorReloaded, seteditorReloaded] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+    const [selectedCode, setSelectedCode] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [isSnippetViewOpen, setSnippetViewOpen] = useState(false);
     const [snippetTitle, setSnippetTitle] = useState('');
@@ -136,24 +137,27 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
 
         const handleSelectionChange = debounce(() => {
             const selection = editor.getSelection();
-            console.log('XX :>>x ', selection);
             if (selection && !selection.isEmpty()) {
-                const domNode = editor.getDomNode();
+                const selectedText = editor?.getModel()?.getValueInRange(selection); // Use optional chaining
+                if (selectedText?.trim()) {  // Check if selectedText is not empty
+                    setSelectedCode(selectedText);  // Store the selected code in state
 
-
-                if (domNode) {
-                    const position = editor.getScrolledVisiblePosition(selection.getPosition());
-                    if (position) {
-                        const adjustedTop = Math.min(position.top, domNode.clientHeight - 100);
-                        const adjustedLeft = Math.min(position.left, domNode.clientWidth - 200);
-                        setPopupPosition({ top: adjustedTop, left: adjustedLeft });
-                        setShowPopup(true);
+                    const domNode = editor.getDomNode();
+                    if (domNode) {
+                        const position = editor.getScrolledVisiblePosition(selection.getPosition());
+                        if (position) {
+                            const adjustedTop = Math.min(position.top, domNode.clientHeight - 100);
+                            const adjustedLeft = Math.min(position.left, domNode.clientWidth - 200);
+                            setPopupPosition({ top: adjustedTop, left: adjustedLeft });
+                            setShowPopup(true);  // Show pop-up only when valid text is selected
+                        }
                     }
                 }
-
-
+            } else {
+                // Hide pop-up if no text is selected
+                setShowPopup(false);
             }
-        }, 1);
+        }, 1000);
 
         const disposable = editor.onDidChangeCursorSelection(handleSelectionChange);
 
@@ -163,6 +167,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
             console.log('XX :>> ');
         };
     }, [editorReloaded]);
+
 
     // Handle editor mount
     const handleEditorDidMount: OnMount = (editor) => {
@@ -378,7 +383,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
     };
 
     return (
-        <div style={{ position: 'relative', height, width, border: '1px solid #ddd' }}>
+        <div style={{ position: 'relative', height, width, border: '1px solid #e0e0e0', borderRadius: '12px', overflow: 'hidden' }}>
             <Editor
                 height="100%"
                 defaultLanguage="java"
@@ -396,78 +401,107 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                 }}
             />
 
-            {/* Pop-up for "Get Suggestion" Button */}
-            {showPopup && (
+            {/* Pop-up for "Get Suggestion" and "Add Snippet" Buttons */}
+            {showPopup && selectedCode && (
                 <div
                     style={{
                         position: 'fixed',
                         top: popupPosition.top,
                         left: popupPosition.left,
-                        backgroundColor: 'white',
-                        border: '1px solid #ddd',
-                        padding: '8px',
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e0e0e0',
+                        padding: '12px',
                         zIndex: 10000,
-                        borderRadius: '8px',
-                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '12px',
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                     }}
                 >
                     <button
                         style={{
-                            background: 'linear-gradient(135deg, #6b73ff, #000dff)',
-                            color: '#fff',
+                            background: 'linear-gradient(135deg, #76c7c0, #42a5f5)',
+                            color: '#ffffff',
                             border: 'none',
-                            padding: '8px 12px',
-                            borderRadius: '4px',
+                            padding: '10px 16px',
+                            borderRadius: '8px',
                             cursor: 'pointer',
-                            transition: 'background 0.3s',
+                            transition: 'background 0.3s, transform 0.2s',
+                            marginBottom: '8px',
+                            width: '100%',
                         }}
                         onClick={loadDummySuggestions}
+                        onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                        onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
                         Get Suggestions
                     </button>
                     <button
                         style={{
-                            background: 'linear-gradient(135deg, #6b73ff, #000dff)',
-                            color: '#fff',
+                            background: 'linear-gradient(135deg, #76c7c0, #42a5f5)',
+                            color: '#ffffff',
                             border: 'none',
-                            padding: '8px 12px',
-                            borderRadius: '4px',
+                            padding: '10px 16px',
+                            borderRadius: '8px',
                             cursor: 'pointer',
-                            transition: 'background 0.3s',
+                            transition: 'background 0.3s, transform 0.2s',
+                            width: '100%',
                         }}
                         onClick={() => setSnippetViewOpen(true)}
+                        onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                        onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
                         Add Snippet
                     </button>
 
                     {/* Display Suggestions */}
                     {suggestions.length > 0 && (
-                        <ul style={{ listStyleType: 'none', padding: '8px 0', margin: 0 }}>
+                        <ul style={{ listStyleType: 'none', padding: '12px 0', margin: 0 }}>
                             {suggestions.map((suggestion, index) => (
-                                <li key={index} style={{ padding: '4px 0', fontSize: '14px' }}>{suggestion}</li>
+                                <li key={index} style={{ padding: '6px 0', fontSize: '14px', color: '#616161' }}>{suggestion}</li>
                             ))}
                         </ul>
                     )}
                     {isSnippetViewOpen && (
-                        <div style={{ padding: '8px 0' }}>
-                            <label htmlFor="snippet-title" style={{ fontSize: '14px', padding: '4px 0' }}>Enter Snippet Title:</label>
+                        <div style={{ padding: '12px 0' }}>
+                            <label htmlFor="snippet-title" style={{ fontSize: '14px', color: '#424242', padding: '6px 0' }}>Enter Snippet Title:</label>
                             <input
                                 type="text"
                                 id="snippet-title"
-                                style={{ padding: '4px', margin: '4px 0', fontSize: '14px', width: '100%' }}
+                                style={{
+                                    padding: '8px',
+                                    margin: '8px 0',
+                                    fontSize: '14px',
+                                    width: '100%',
+                                    borderRadius: '8px',
+                                    border: '1px solid #bdbdbd',
+                                    color: '#000', // Ensuring the text color is visible (black)
+                                    backgroundColor: '#fff', // Ensuring background is white (or any desired color)
+                                }}
                                 placeholder="Snippet Title"
                                 value={snippetTitle}
                                 onChange={(e) => setSnippetTitle(e.target.value)}
                             />
+
                             <button
-                                onClick={() => addSnippet(storedUserId, snippetTitle, "Sample selected code")}
-                                style={{ padding: '8px 12px', marginTop: '8px', fontSize: '14px' }}
+                                onClick={() => addSnippet(storedUserId, snippetTitle, selectedCode)}
+                                style={{
+                                    padding: '10px 16px',
+                                    marginTop: '8px',
+                                    fontSize: '14px',
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #76c7c0, #42a5f5)',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'background 0.3s, transform 0.2s',
+                                    width: '100%',
+                                }}
+                                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 Save
                             </button>
                         </div>
                     )}
-
                 </div>
             )}
         </div>
