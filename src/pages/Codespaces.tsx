@@ -68,6 +68,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
 
     // State to store the selected codespace ID and its code history
     const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
+    const [selectedCodeSpace, setSelectedCodeSpace] = useState<number | null>(null);
     const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
     useEffect(() => {
@@ -82,6 +83,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
             );
             const latestCodespace = sortedCodespaces[0];
             setSelectedFileId(latestCodespace.id);
+            setSelectedCodeSpace(latestCodespace);
             fetchCodeHistory(latestCodespace.id);
         }
     }, [codespaces]);
@@ -138,9 +140,9 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                                 <Typography variant="body1" style={{ marginLeft: 10 }}>
                                     {codespace.name}
                                 </Typography>
-                                <FileCount>
-                                    <Badge color="primary" badgeContent={codeHistory.length} />
-                                </FileCount>
+                                {/* <FileCount>
+                                    <Badge color="primary" badgeContent={codespaces.filter(space => space.id == codespace.id).length} />
+                                </FileCount> */}
                             </ListItemButton>
                         ))}
                 </List>
@@ -159,7 +161,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                 {selectedFileId && (
                     <>
                         <Typography variant="h4" gutterBottom>
-                            Code History for Codespace {selectedFileId}
+                            Codespace {selectedCodeSpace == null ? "" : " - " + selectedCodeSpace.id}
                         </Typography>
 
                         <FileList>
