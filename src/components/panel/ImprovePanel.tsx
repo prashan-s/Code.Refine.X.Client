@@ -18,6 +18,7 @@ import { CodeAnalysisFacade, CodeAnalysisResult, DefaultCodeAnalysisResult } fro
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/reducers';
 import axios from 'axios';
+import PdfDownloadButton from '@components/PdfDownloadButton';
 
 // function CircularProgressWithLabel(
 //     props: CircularProgressProps & { value: number },
@@ -94,6 +95,62 @@ const ImprovePanel: React.FC = () => {
     //     }
     // };
 
+    // Generate dynamic HTML content with real values for the PDF download
+    const generatePdfContent = () => {
+        return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Code Analysis Report</title>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+                body { margin: 0; font-family: 'Roboto', sans-serif; background-color: #f4f6f9; color: #333; }
+                .container { display: flex; flex-direction: column; padding: 32px; max-width: 1000px; margin: auto; background-color: #ffffff; border-radius: 16px; box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); }
+                .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 16px 24px; border-bottom: 2px solid #1976d2; }
+                .title { font-weight: bold; font-size: 24px; color: #1976d2; }
+                .content { display: flex; flex-direction: column; gap: 32px; }
+                .section { padding: 24px; background-color: #ffffff; border-radius: 16px; box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.05); }
+                .section h6 { font-weight: bold; color: #1976d2; margin-bottom: 16px; border-bottom: 1px solid #1976d2; padding-bottom: 8px; }
+                .linear-progress { height: 12px; border-radius: 6px; background-color: #e0e0e0; margin-bottom: 8px; }
+                .linear-progress-bar { height: 100%; border-radius: 6px; background-color: #1976d2; width: ${analysisResult?.finalScore || 0}%; }
+                .insight-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
+                .footer { margin-top: 32px; text-align: center; padding: 16px; font-size: 14px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="title">Code Analysis Report</div>
+                </div>
+                <div class="content">
+                    <div class="section">
+                        <h6>Overall Score</h6>
+                        <div class="linear-progress">
+                            <div class="linear-progress-bar"></div>
+                        </div>
+                        <p style="margin-top: 8px; color: #1976d2; font-weight: bold;">${analysisResult?.finalScore || 'N/A'}</p>
+                    </div>
+                    <div class="section">
+                        <h6>Insights</h6>
+                        <div class="insight-item"><span>Language</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.language || 'N/A'}</span></div>
+                        <div class="insight-item"><span>Big O Complexity</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.complexity.bigONotation || 'N/A'}</span></div>
+                        <div class="insight-item"><span>Loops</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.metrics.loopCount || 'N/A'}</span></div>
+                        <div class="insight-item"><span>Conditionals</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.metrics.conditionals || 'N/A'}</span></div>
+                        <div class="insight-item"><span>Has Recursions</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.metrics?.hasRecursion ? 'Yes' : 'No'}</span></div>
+                        <div class="insight-item"><span>Function Calls</span><span style="font-weight: bold; color: #1976d2;">${analysisResult?.metrics.functionCalls || 'N/A'}</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p>© 2024 CodeRefineX. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+    };
+
     const fetchGitHubSuggestions = async (code: string) => {
         try {
             setLoadingSuggestions(true); // Set loading state to true
@@ -147,6 +204,7 @@ const ImprovePanel: React.FC = () => {
 
     return (
         <PanelContainer>
+            <PdfDownloadButton htmlContent={generatePdfContent()} fileName="code_analysis_report.pdf" />
             {/* Overall Score Section */}
             <SectionTitle>Overall Score</SectionTitle>
             <ScoreText>{analysisResult?.finalScore}</ScoreText>
