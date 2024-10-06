@@ -40,15 +40,69 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
 
     // Load dummy suggestions
     const loadDummySuggestions = () => {
-        console.log('XX :>> loadDummySuggestions ');
-        setSuggestions([
-            'Suggestion 1: Add a class',
-            'Suggestion 2: Use better variable names',
-            'Suggestion 3: Add comments for clarity',
-            'Suggestion 4: Refactor the method',
-            'Suggestion 5: Simplify the logic',
-        ]);
+        // let data =
+        //     setSuggestions([
+        //         'Suggestion 1: Add a class',
+        //         'Suggestion 2: Use better variable names',
+        //         'Suggestion 3: Add comments for clarity',
+        //         'Suggestion 4: Refactor the method',
+        //         'Suggestion 5: Simplify the logic',
+        //     ]);
+
+        fetchGitHubSuggestions(selectedCode);
     };
+
+    const fetchGitHubSuggestions = async (code: string) => {
+        try {
+            const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+            // Step 1: Replace dots with pluses and convert capital letters to lowercase
+            const processedQuery = code
+                .toLowerCase()        // Convert to lowercase
+                .replace(/./g, '+'); // Replace dots with '+'
+
+            // Step 2: Encode the query for the URL
+            const query = processedQuery;
+
+            // Step 3: Call the API with the transformed query
+            const response = await axiosInstance.get(
+                `https://api.github.com/search/code?q=${query}+in:file+language:java`,
+                {
+                    headers: {
+                        Accept: 'application/vnd.github.text-match+json',
+                        Authorization: `Bearer ${GITHUB_TOKEN}`,
+                    },
+                }
+            );
+
+            console.log("VV response.data", response.data.items[0].text_matches[0].fragment)
+            const sanitizedCode: string = `${response.data.items[0].fragment}`.replace(/"/g, '\"');
+
+            // // Step 4: Process the response
+            // const suggestionItems = response.data.items.map((item: any) => ({
+            //     fragment: item.text_matches[0]?.fragment ?? 'No match found', // Access text_matches safely
+            //     html_url: item.html_url,
+            // }));
+
+            // console.log('suggestionItems', suggestionItems)
+            const fragments = response.data.items.map(item => item.text_matches[0].fragment);
+            setSuggestions(fragments); // Update suggestions
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            setSuggestions([]);
+        } finally {
+
+        }
+    };
+
+    const handleGetSuggestions = () => {
+        if (selectedCode.trim()) {
+            fetchGitHubSuggestions(selectedCode);
+        } else {
+            showToast('error', 'Error', 'Please select some code.');
+        }
+    };
+
 
     const loadDummyGist = async () => {
 
