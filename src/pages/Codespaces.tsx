@@ -11,6 +11,7 @@ import {
     IconButton,
     InputBase,
     Badge,
+    TextField,
 } from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,7 +19,7 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 // import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ButtonBase from '@mui/material/ButtonBase';
 import { formatDistanceToNow } from 'date-fns';
-
+import SearchIcon from "@mui/icons-material/Search";
 // Define the PageProps and Codespace interface
 interface PageProps {
     setIsSidebarHidden: (hidden: boolean) => void;
@@ -71,6 +72,10 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const [selectedCodeSpace, setSelectedCodeSpace] = useState<number | null>(null);
     const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
+    const [searchQuery, setSearchQuery] = useState<string>(''); // state for the search query
+    const [filteredSpaces, setFilteredSpaces] = useState<[]>([]); // filtered data
+
+
     useEffect(() => {
         setIsSidebarHidden(true);
         return () => setIsSidebarHidden(false);
@@ -92,6 +97,15 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
         setSelectedFileId(fileId);
         fetchCodeHistory(fileId);
     };
+
+
+    useEffect(() => {
+        // Filter projects whenever the search query changes
+        const filtered = codespaces.filter((space: Codespace) =>
+            space.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredSpaces(filtered);
+    }, [searchQuery, codeHistory]);
 
     const fetchCodeHistory = async (fileId: number) => {
         try {
@@ -115,10 +129,15 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
         <AppContainer>
             <Sidebar>
                 <SearchContainer>
-                    <SearchIconWrapper>
-                        <SearchOutlined />
-                    </SearchIconWrapper>
-                    <StyledInputBase placeholder="Search codespaces" inputProps={{ "aria-label": "search" }} />
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        placeholder="Search codespaces"
+                        InputProps={{
+                            startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+                        }}
+                        onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+                    />
                 </SearchContainer>
 
                 <Typography variant="h6" gutterBottom>
@@ -126,7 +145,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                 </Typography>
 
                 <List>
-                    {[...codespaces]
+                    {[...filteredSpaces]
                         .sort((a, b) => b.id - a.id) // Sort by id in descending order
                         .map((codespace: Codespace, index: number) => (
                             <ListItemButton
