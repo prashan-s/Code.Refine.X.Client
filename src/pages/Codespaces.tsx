@@ -161,7 +161,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                 {selectedFileId && (
                     <>
                         <Typography variant="h4" gutterBottom>
-                            Codespace {selectedCodeSpace == null ? "" : " - " + selectedCodeSpace.id}
+                            Previous Versions
                         </Typography>
 
                         <FileList>
