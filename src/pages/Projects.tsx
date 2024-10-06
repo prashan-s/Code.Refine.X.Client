@@ -88,6 +88,47 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
         navigate(`/projects/${projectID}/codespaces`, { state: { codespaces: projectCodespaces } });
     };
 
+    // Create a new project
+    const createNewProject = async (userId: number) => {
+        try {
+            // Step 1: Show popup to get project name
+            const { value: projectName } = await Swal.fire({
+                title: 'Enter project name',
+                input: 'text',
+                inputPlaceholder: 'Enter project name',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Project name cannot be empty!';
+                    }
+                    return null;
+                },
+            });
+
+            // If the user canceled or didn't enter a value, abort the operation
+            if (!projectName) {
+                return;
+            }
+
+            // Step 2: API call to create the project
+            const createProjectResponse = await axiosInstance.post(`/projects`, {
+                userId: userId,
+                projectName: projectName,
+            });
+
+            const newProject: Project = createProjectResponse.data; // Assuming the response includes the project object
+
+            console.log("New project created:", newProject);
+
+            // Step 3: Update the projects state with the newly created project
+            setProjects((prevProjects) => [...prevProjects, newProject]);
+
+        } catch (err) {
+            console.error("Error creating project:", err);
+        }
+    };
+
+
     return (
         <StyledContainer>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={5} mt={3}>
@@ -119,7 +160,7 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
                     {projects.map((project, index) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                             <StyledProjectCard onClick={() => handleProjectClick(project.projectID)}>
-                                <img src={project.image} alt={project.projectName} className="project-image" />
+                                <img src="/src/assets/project_placeholder.png" alt={project.projectName} className="project-image" />
                                 <Typography variant="h6" fontWeight="bold" mt={2} color="#333333">
                                     {project.projectName}
                                 </Typography>
