@@ -20,6 +20,8 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import ButtonBase from '@mui/material/ButtonBase';
 import { formatDistanceToNow } from 'date-fns';
 import SearchIcon from "@mui/icons-material/Search";
+import useSessionStorage from '@hooks/useSessionStorage';
+import Swal from 'sweetalert2';
 // Define the PageProps and Codespace interface
 interface PageProps {
     setIsSidebarHidden: (hidden: boolean) => void;
@@ -64,7 +66,7 @@ interface CodeHistory {
 
 const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const location = useLocation();
-    const { codespaces } = location.state;
+    let { codespaces } = location.state;
     const navigate = useNavigate();  // For navigating to the CodeEditor
 
     // State to store the selected codespace ID and its code history
@@ -73,7 +75,9 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
     const [searchQuery, setSearchQuery] = useState<string>(''); // state for the search query
-    const [filteredSpaces, setFilteredSpaces] = useState<[]>([]); // filtered data
+    const [filteredSpaces, setFilteredSpaces] = useState<any[]>([]); // filtered data
+    const [storedUserId] = useSessionStorage("userId", null);
+
 
 
     useEffect(() => {
@@ -125,6 +129,64 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
         navigate("/editor", { state: { selectedHistory: historyItem } });
     };
 
+
+    const handleCreateCodespaceClick = () => {
+
+        const userId = storedUserId; // Replace this with the actual userId (can be dynamic)
+        createNewCodespace(userId);
+    };
+
+    // Create a new project
+    const createNewCodespace = async (userId: number) => {
+
+        console.log("createNewProject", codespaces);
+        console.log("createNewProject", codespaces[0]);
+
+        try {
+            // Step 1: Show popup to get project name
+            const { value: projectName } = await Swal.fire({
+                title: 'Create New Codespace',
+                input: 'text',
+                inputPlaceholder: 'Enter name',
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Codespace name cannot be empty!';
+                    }
+                    return null;
+                },
+            });
+
+            // If the user canceled or didn't enter a value, abort the operation
+            if (!projectName) {
+                return;
+            }
+
+            // Step 2: API call to create the project
+            const createProjectResponse = await axiosInstance.post(`/Files`, {
+                projectId: codespaces[0].projectId,
+                fileName: projectName,
+                code: "Hello"
+            });
+
+            const newProject = createProjectResponse.data.file; // Assuming the response includes the project object
+
+            console.log("New CodeSpaces created:", newProject);
+
+            // Step 3: Update the projects state with the newly created project
+            codespaces = [...codespaces, newProject];
+
+            const filtered = codespaces.filter((space: Codespace) =>
+                space.name.toLowerCase()
+            );
+
+            setFilteredSpaces(filtered);
+            console.log("filtered after", codespaces);
+        } catch (err) {
+            console.error("Error creating project:", err);
+        }
+    };
+
     return (
         <AppContainer>
             <Sidebar>
@@ -168,7 +230,7 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
 
                 <Divider />
 
-                <CreateButton>
+                <CreateButton onClick={handleCreateCodespaceClick}>
                     <AddIcon />
                     <Typography variant="body2" style={{ marginLeft: 10 }}>
                         Create New Codespace

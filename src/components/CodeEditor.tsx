@@ -7,6 +7,7 @@ import { debounce } from 'lodash';
 import axiosInstance from '@utils/axiosInstance';
 import { showToast } from '@utils/toastService';
 import useSessionStorage from "@hooks/useSessionStorage";
+import GistService from "@components/codeAnalysis/GistService.ts";
 
 interface CodeEditorProps {
     height?: string;
@@ -47,6 +48,17 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
             'Suggestion 5: Simplify the logic',
         ]);
     };
+
+    const loadDummyGist = () => {
+
+        const promise = GistService.createGist(selectedCode, "Dummy desc by dula", true);
+        promise.then((result) => {
+            console.log("Gist created successfully!");
+        }).catch((err) => {
+           console.error(err);
+        });
+    };
+
 
     const gistShare = (userID: number, code: string) => {
         const gistData = {
@@ -483,7 +495,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             width: '100%',
                             marginTop: '10px'
                         }}
-                        onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
+                        onClick={() => { loadDummyGist(); setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
