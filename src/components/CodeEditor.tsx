@@ -48,6 +48,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
         ]);
     };
 
+    const loadDummyGist = () => {
+
+    };
+
+
     const gistShare = (userID: number, code: string) => {
         const gistData = {
             userID: userID,
@@ -483,7 +488,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             width: '100%',
                             marginTop: '10px'
                         }}
-                        onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
+                        onClick={() => { loadDummyGist(); setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >

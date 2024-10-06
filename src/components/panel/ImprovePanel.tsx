@@ -287,28 +287,7 @@ const ImprovePanel: React.FC = () => {
             <Divider />
             {/* <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} /> */}
 
-            {/* Suggestions Section */}
-            <SectionTitle>Suggestions</SectionTitle>
-            {loadingSuggestions ? (
-                <Box display="flex" justifyContent="center">
-                    <CircularProgress />
-                </Box>
-            ) : (
-                suggestions.length > 0 ? (
-                    <ul style={{ padding: 0 }}>
-                        {suggestions.map((suggestion, index) => (
-                            <SuggestionItem key={index}>
-                                <a href={suggestion} target="_blank" rel="noopener noreferrer">
-                                    {suggestion}
-                                </a>
-                            </SuggestionItem>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No suggestions found</p>
-                )
-            )}
-            <Divider />
+
         </PanelContainer>
     );
 };
