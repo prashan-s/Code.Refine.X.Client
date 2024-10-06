@@ -75,7 +75,6 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const [codeHistory, setCodeHistory] = useState<CodeHistory[]>([]);
 
     const [searchQuery, setSearchQuery] = useState<string>(''); // state for the search query
-    const [allSpaces, setFilteredSpaces] = useState<any[]>([]); // filtered data
     const [filteredSpaces, setFilteredSpaces] = useState<any[]>([]); // filtered data
     const [storedUserId] = useSessionStorage("userId", null);
 
