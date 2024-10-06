@@ -7,7 +7,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import { formatDistanceToNow } from 'date-fns';  // Import the date formatting function
 import useSessionStorage from '@hooks/useSessionStorage';
-
+import Swal from 'sweetalert2';
 interface PageProps {
     setIsSidebarHidden: (hidden: boolean) => void;
 }
@@ -100,8 +100,17 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
         navigate(`/projects/${projectID}/codespaces`, { state: { codespaces: projectCodespaces } });
     };
 
+    const handleCreateProjectClick = () => {
+        console.log("handleCreateProjectClick")
+        const userId = storedUserId; // Replace this with the actual userId (can be dynamic)
+        createNewProject(userId);
+    };
+
     // Create a new project
     const createNewProject = async (userId: number) => {
+
+        console.log("createNewProject");
+
         try {
             // Step 1: Show popup to get project name
             const { value: projectName } = await Swal.fire({
@@ -147,7 +156,7 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
                 <Typography variant="h4" fontWeight="bold" color="#222222">
                     All Projects
                 </Typography>
-                <StyledButton variant="contained" startIcon={<AddCircleOutlineIcon />}>New Project</StyledButton>
+                <StyledButton variant="contained" startIcon={<AddCircleOutlineIcon />} onClick={handleCreateProjectClick} >New Project</StyledButton>
             </Box>
 
             {/* Search Section */}
