@@ -41,6 +41,26 @@ interface CodeHistory {
     version: number;
 }
 
+interface User {
+    userId: number;
+    userGuid: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    colourCode: string;  // Add any other fields you need
+}
+
+interface CodeHistory {
+    codeId: number;
+    fileID: number;
+    code: string;
+    analysisResult: string;
+    language: string;
+    createdDate: string;
+    version: number;
+    user: User;  // Add the 'user' property of type 'User'
+}
+
 const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
     const location = useLocation();
     const { codespaces } = location.state;
@@ -145,8 +165,11 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                         <FileList>
                             {codeHistory.length > 0 ? (
                                 codeHistory.map((historyItem) => (
-                                    <ButtonBase key={historyItem.codeId} onClick={() => handleVersionClick(historyItem)}
-                                        style={{ width: "100%", display: "flex" }}>
+                                    <ButtonBase
+                                        key={historyItem.codeId}
+                                        onClick={() => handleVersionClick(historyItem)}
+                                        style={{ width: "100%", display: "flex" }}
+                                    >
                                         <FileItem style={{ width: "100%", display: "flex", alignItems: "center" }}>
                                             <StyledTypography variant="body1">
                                                 {`Version ${historyItem.version}`}
@@ -154,11 +177,10 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                                             <Typography variant="body2" color="#777777" style={{ marginLeft: 'auto' }}>
                                                 {`${formatDistanceToNow(new Date(historyItem.createdDate))} ago`}
                                             </Typography>
-                                            <ProfileCircle backgroundColor="#FF0000">
-                                                {"historyItem.profileName".charAt(0).toUpperCase()}
+                                            <ProfileCircle backgroundColor={historyItem.user.colourCode}>
+                                                {historyItem.user.firstName.charAt(0).toUpperCase()}
                                             </ProfileCircle>
                                         </FileItem>
-
                                     </ButtonBase>
                                 ))
                             ) : (
@@ -259,7 +281,7 @@ const ProfileCircle = styled.div<{ backgroundColor: string }>`
     height: 35px;
     border-radius: 50%;
     background-color: ${(props) => props.backgroundColor || '#f0f0f0'};
-    color: #333;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
