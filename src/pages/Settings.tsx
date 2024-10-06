@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import ActivitySection from '@components/settings/ActivitySection';
+// import ActivitySection from '@components/settings/ActivitySection';
 import ProfileSection from '@components/settings/ProfileSection';
 import PersonalizationSection from '@components/settings/PersonalizationSection';
 import APISection from '@components/settings/APISection';
@@ -26,7 +26,6 @@ const Layout = styled(Box)`
   min-height: 100vh;
   background-color: #fff;
   width: 100%;
-  margin-right: 3rem;
 `;
 
 // ContentContainer Component - Should be separated into its own file (e.g., ContentContainer.tsx)
@@ -60,8 +59,8 @@ const SettingsPage: React.FC = () => {
                 return <ProfileSection />;
             case 'Team':
                 return <MemberSection />;
-            case 'Activity':
-                return <ActivitySection />;
+            // case 'Activity':
+            //     return <ActivitySection />;
             case 'Personalization':
                 return <PersonalizationSection />;
             case 'Security':
@@ -69,19 +68,18 @@ const SettingsPage: React.FC = () => {
             case 'API':
                 return <APISection />;
             default:
-                return <ActivitySection />;
+                return <ProfileSection />;
         }
     };
 
     return (
         <Layout>
-            <AppBar position="static" color="transparent" elevation={0} style={{ padding: "0 1rem" }}>
+            {/* <AppBar position="static" color="transparent" elevation={0} style={{ padding: "0 1rem" }}>
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
                         CodeRefineX
                     </Typography>
                     <Button color="inherit">Projects</Button>
-                    <Button color="inherit">Teams</Button>
                     <Button color="inherit">Resources</Button>
                     <Button color="inherit">Settings</Button>
                     <Button variant="contained" color="primary" sx={{ marginX: 2 }}>
@@ -91,7 +89,7 @@ const SettingsPage: React.FC = () => {
                         <Avatar alt="User Avatar" />
                     </IconButton>
                 </Toolbar>
-            </AppBar>
+            </AppBar> */}
             <Container maxWidth="xl">
                 <ContentContainer>
                     {/* Sidebar Component - Should be separated into its own file (e.g., Sidebar.tsx) */}
@@ -100,7 +98,8 @@ const SettingsPage: React.FC = () => {
                             Settings
                         </Typography>
                         <List>
-                            {['Profile', 'Team', 'Activity', 'Personalization', 'Security', 'API'].map(
+                            {/* {['Profile', 'Team', 'Activity', 'Personalization', 'Security', 'API'].map( */}
+                            {['Profile', 'Security'].map(
                                 (item, index) => (
                                     <ListItem
                                         button

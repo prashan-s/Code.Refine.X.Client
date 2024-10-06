@@ -481,6 +481,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             cursor: 'pointer',
                             transition: 'background 0.3s, transform 0.2s',
                             width: '100%',
+                            marginTop: '10px'
                         }}
                         onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
