@@ -38,6 +38,7 @@
     "react-router-dom": "^6.26.1",
     "react-spinners-kit": "^1.9.1",
     "styled-components": "^6.1.13",
+    "sweetalert2": "^11.14.1",
     "vite-tsconfig-paths": "^5.0.1",
     "yup": "^1.4.0"
   },

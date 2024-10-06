@@ -147,15 +147,18 @@ const Codespaces: React.FC<PageProps> = ({ setIsSidebarHidden }) => {
                                 codeHistory.map((historyItem) => (
                                     <ButtonBase key={historyItem.codeId} onClick={() => handleVersionClick(historyItem)}
                                         style={{ width: "100%", display: "flex" }}>
-                                        <FileItem style={{ width: "100%", display: "flex" }}>
-                                            {/* <StyledChevronIcon /> */}
+                                        <FileItem style={{ width: "100%", display: "flex", alignItems: "center" }}>
                                             <StyledTypography variant="body1">
                                                 {`Version ${historyItem.version}`}
                                             </StyledTypography>
                                             <Typography variant="body2" color="#777777" style={{ marginLeft: 'auto' }}>
                                                 {`${formatDistanceToNow(new Date(historyItem.createdDate))} ago`}
                                             </Typography>
+                                            <ProfileCircle backgroundColor="#FF0000">
+                                                {"historyItem.profileName".charAt(0).toUpperCase()}
+                                            </ProfileCircle>
                                         </FileItem>
+
                                     </ButtonBase>
                                 ))
                             ) : (
@@ -249,6 +252,31 @@ const FileItem = styled.div`
   &:active {
     transform: translateY(1px); /* Slight depression effect on click */
   }
+`;
+
+const ProfileCircle = styled.div<{ backgroundColor: string }>`
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: ${(props) => props.backgroundColor || '#f0f0f0'};
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #e0e0e0;
+    }
+
+    &:active {
+        background-color: #d0d0d0;
+    }
 `;
 
 // Styled ChevronRightIcon Component
