@@ -204,7 +204,6 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
 const StyledContainer = styled(Container)`
   padding: 32px;
   min-width: 100vw;  /* Full viewport width */
-  height: 100vh; /* Full viewport height */
   margin: 0;
   background-color: #f9f9f9;
   display: flex;
