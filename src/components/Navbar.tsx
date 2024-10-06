@@ -23,8 +23,7 @@ const Navbar = () => {
             <Logo onClick={() => navigate('/')}>CodeRefineX</Logo>
             <NavItems>
                 <NavLink to="/">Home</NavLink>
-                <NavLink to="/about">About</NavLink>
-                {/* Profile Icon with Material UI dropdown */}
+                {/* <NavLink to="/about">About</NavLink>
                 <IconButton onClick={handleClick}>
                     <AccountCircle fontSize="large" style={{ color: "black" }} />
                 </IconButton>
@@ -55,7 +54,7 @@ const Navbar = () => {
                         </ListItemIcon>
                         Logout
                     </MenuItem>
-                </Menu>
+                </Menu> */}
             </NavItems>
         </NavbarContainer>
     );

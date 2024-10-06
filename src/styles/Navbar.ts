@@ -11,7 +11,7 @@ export const NavbarContainer = styled.nav`
   align-items: center;
   background-color: white; /* White background */
   color: black; /* Black font color */
-  padding: 0.3rem 3rem;
+  padding: 0.6rem 3rem;
   /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
