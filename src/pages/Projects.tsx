@@ -28,6 +28,10 @@ interface Codespace {
 const Projects = ({ setIsSidebarHidden }: PageProps) => {
     const [projects, setProjects] = useState<Project[]>([]);
     const [codespaces, setCodespaces] = useState<Codespace[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>(''); // state for the search query
+    const [filteredProjects, setFilteredProjects] = useState<Project[]>([]); // filtered data
+
+
     const navigate = useNavigate();
 
     // Fetch userId from session storage
@@ -78,6 +82,14 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
     useEffect(() => {
         fetchProjectsAndCodespaces();
     }, []);
+
+    useEffect(() => {
+        // Filter projects whenever the search query changes
+        const filtered = projects.filter((project: Project) =>
+            project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProjects(filtered);
+    }, [searchQuery, projects]);
 
     // Handle project click - navigate to the Codespaces page
     const handleProjectClick = (projectID: number) => {
@@ -146,8 +158,8 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
                     placeholder="Search projects"
                     InputProps={{
                         startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
-                        style: { paddingLeft: "16px", backgroundColor: "#EFEFEF", borderRadius: 20, boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }
                     }}
+                    onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
                 />
             </Box>
 
@@ -157,7 +169,7 @@ const Projects = ({ setIsSidebarHidden }: PageProps) => {
                     Recent Projects
                 </Typography>
                 <Grid container spacing={4}>
-                    {projects.map((project, index) => (
+                    {filteredProjects.map((project, index) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                             <StyledProjectCard onClick={() => handleProjectClick(project.projectID)}>
                                 <img src="/src/assets/project_placeholder.png" alt={project.projectName} className="project-image" />
