@@ -8,6 +8,7 @@ import axiosInstance from '@utils/axiosInstance';
 import { showToast } from '@utils/toastService';
 import useSessionStorage from "@hooks/useSessionStorage";
 import GistService from "@components/codeAnalysis/GistService.ts";
+import Swal from 'sweetalert2';
 
 interface CodeEditorProps {
     height?: string;
@@ -49,13 +50,51 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
         ]);
     };
 
-    const loadDummyGist = () => {
+    const loadDummyGist = async () => {
 
-        const promise = GistService.createGist(selectedCode, "Dummy desc by dula", true);
-        promise.then((result) => {
-            console.log("Gist created successfully!");
+        setShowPopup(false);
+        // Step 1: Show popup to get project name
+        const { value: projectName } = await Swal.fire({
+            title: 'GIST Sharing',
+            input: 'text',
+            inputPlaceholder: 'Enter GIST Title',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'GIST Title cannot be empty!';
+                }
+                return null;
+            },
+        });
+
+        const promise = GistService.createGist(selectedCode, projectName, true);
+        promise.then(async (result) => {
+
+            try {
+
+
+                // If the user canceled or didn't enter a value, abort the operation
+                if (!projectName) {
+                    return;
+                }
+
+                console.log("XX userID:", storedUserId);
+                console.log("XX projectName:", projectName);
+                console.log("XX url:", result);
+                ////=====
+                const createProjectResponse = await axiosInstance.post(`/Gists`, {
+                    userId: storedUserId,
+                    title: projectName,
+                    description: selectedCode,
+                    url: result
+                });
+
+            } catch (err) {
+                console.error("Error creating project:", err);
+            }
+
         }).catch((err) => {
-           console.error(err);
+            console.error(err);
         });
     };
 
@@ -66,7 +105,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
             snippetContent: code,
         };
         console.log('call to gistShare method', gistData);
-
+        loadDummyGist()
     };
     const addSnippet = (userID: number, title: string, code: string) => {
         const snippetData = {
@@ -495,7 +534,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height = '90vh', width = '90vw'
                             width: '100%',
                             marginTop: '10px'
                         }}
-                        onClick={() => { loadDummyGist(); setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
+                        onClick={() => { setSugessionViewOpen(false); setSnippetViewOpen(false); setGistShareViewOpen(true) }}
                         onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
                         onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >

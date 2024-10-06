@@ -3,7 +3,7 @@ class GistService {
     public static async createGist(userCode: string, description: string = '', isPublic: boolean = true): Promise<string | null> {
         try {
 
-            const accessToken = "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";
+            const accessToken = "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";
             const sanitizedCode: string = userCode.replace(/"/g, '\\"');
 
             const response = await fetch('https://api.github.com/gists', {
