@@ -208,6 +208,7 @@ const StyledContainer = styled(Container)`
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 `;
 
 const StyledButton = styled(Button)`
