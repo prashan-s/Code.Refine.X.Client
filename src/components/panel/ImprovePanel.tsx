@@ -204,7 +204,7 @@ const ImprovePanel: React.FC = () => {
 
     return (
         <PanelContainer>
-            <PdfDownloadButton htmlContent={generatePdfContent()} fileName="code_analysis_report.pdf" />
+
             {/* Overall Score Section */}
             <SectionTitle>Overall Score</SectionTitle>
             <ScoreText>{analysisResult?.finalScore}</ScoreText>
@@ -284,6 +284,13 @@ const ImprovePanel: React.FC = () => {
             ) : (
                 <p>No errors found</p>
             )}
+            <Divider />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                <span style={{ fontSize: '14px', color: '#333' }}>Download Analysis Result</span>
+                <PdfDownloadButton htmlContent={generatePdfContent()} fileName="code_analysis_report.pdf" />
+            </div>
+
             <Divider />
             {/* <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} /> */}
 
