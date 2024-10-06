@@ -12,7 +12,7 @@ export const FullScreenContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 91vh;
   width: 100%;
   position: relative;
   z-index: 1;

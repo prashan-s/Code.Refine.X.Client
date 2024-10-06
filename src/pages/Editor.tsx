@@ -61,35 +61,39 @@ const Editor = ({ setIsSidebarHidden }: PageProps) => {
             });
 
             const newProject = response.data;
+
+            // Refresh the page to show the new project
+            window.location.reload();
             console.log("New project created:", newProject);
 
-            // await createFileInProject(newProject.projectId, editorCode);
-            await createFileInProject(newProject.projectId, `
-                // Write your Java code here
-                public class Main {
-                    public static void main(String[] args) {
-                        System.out.println("Hello World");
-                    }
-                }`
-            );
+            // // await createFileInProject(newProject.projectId, editorCode);
+            // await createFileInProject(newProject.projectId, `
+            //     // Write your Java code here
+            //     public class Main {
+            //         public static void main(String[] args) {
+            //             System.out.println("Hello World");
+            //         }
+            //     }`
+            // );
+
         } catch (err) {
             console.error("Error creating a new project:", err);
         }
     };
 
-    // Create a file in the project using the current editor code
-    const createFileInProject = async (projectId: number, code: string) => {
-        try {
-            const response = await axiosInstance.post(`/files`, {
-                projectId: projectId,
-                fileName: "untitled",
-                code: code,
-            });
-            console.log("New file created:", response.data);
-        } catch (err) {
-            console.error("Error creating file in project:", err);
-        }
-    };
+    // // Create a file in the project using the current editor code
+    // const createFileInProject = async (projectId: number, code: string) => {
+    //     try {
+    //         const response = await axiosInstance.post(`/files`, {
+    //             projectId: projectId,
+    //             fileName: "untitled",
+    //             code: code,
+    //         });
+    //         console.log("New file created:", response.data);
+    //     } catch (err) {
+    //         console.error("Error creating file in project:", err);
+    //     }
+    // };
 
     useEffect(() => {
         const checkProjects = async () => {

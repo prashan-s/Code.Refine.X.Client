@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@redux/reducers';
 import axios from 'axios';
 import PdfDownloadButton from '@components/PdfDownloadButton';
+import axiosInstance from '@utils/axiosInstance';
 
 // function CircularProgressWithLabel(
 //     props: CircularProgressProps & { value: number },
@@ -57,6 +58,7 @@ const ImprovePanel: React.FC = () => {
     const [debouncedCode, setDebouncedCode] = useState(inputCode);
     const [suggestions, setSuggestions] = useState<string[]>([]); // To store GitHub suggestions
     const [loadingSuggestions, setLoadingSuggestions] = useState<boolean>(false);
+    const [userReportData, setUserReportData] = useState('');
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -202,6 +204,122 @@ const ImprovePanel: React.FC = () => {
         }
     };
 
+    const [reportData, setReportData] = useState(null);
+
+    // Fetch report data when component mounts
+    useEffect(() => {
+        const fetchReportData = async () => {
+            try {
+                const response = await axiosInstance.get('/Report', {
+                    headers: {
+                        Accept: 'text/plain',
+                    },
+                });
+                setUserReportData(response.data);
+            } catch (error) {
+                console.error('Error fetching report data:', error);
+            }
+        };
+
+        fetchReportData();
+    }, []);
+
+    const generateUserPdfContent = () => {
+        return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Code Analysis Report</title>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+                body { margin: 0; font-family: 'Roboto', sans-serif; background-color: #f4f6f9; color: #333; }
+                .container { display: flex; flex-direction: column; padding: 32px; max-width: 1000px; margin: auto; background-color: #ffffff; border-radius: 16px; box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); }
+                .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 16px 24px; border-bottom: 2px solid #1976d2; }
+                .title { font-weight: bold; font-size: 24px; color: #1976d2; }
+                .content { display: flex; flex-direction: column; gap: 32px; }
+                .section { padding: 24px; background-color: #ffffff; border-radius: 16px; box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.05); }
+                .section h6 { font-weight: bold; color: #1976d2; margin-bottom: 16px; border-bottom: 1px solid #1976d2; padding-bottom: 8px; }
+                .info-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
+                .footer { margin-top: 32px; text-align: center; padding: 16px; font-size: 14px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="title">Code Analysis Report</div>
+                </div>
+    
+                <div class="content">
+                    <div class="section">
+                        <h6>User Information</h6>
+                        <div class="info-item"><span>User ID</span><span>${userReportData.userId}</span></div>
+                        <div class="info-item"><span>Name</span><span>${userReportData.firstName} ${userReportData.lastName}</span></div>
+                        <div class="info-item"><span>Email</span><span>${userReportData.email}</span></div>
+                        <div class="info-item"><span>Created Date</span><span>${userReportData.createdDate}</span></div>
+                        <div class="info-item"><span>Role</span><span>${userReportData.role}</span></div>
+                        <div class="info-item"><span>Colour Code</span><span style="background-color: ${userReportData.colourCode}; width: 20px; height: 20px; display: inline-block;"></span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Gist Information</h6>
+                        <div class="info-item"><span>Gist Title</span><span>${userReportData.gists[0]?.title || 'N/A'}</span></div>
+                        <div class="info-item"><span>Description</span><span>${userReportData.gists[0]?.description || 'N/A'}</span></div>
+                        <div class="info-item"><span>Created Date</span><span>${userReportData.gists[0]?.dateCreated || 'N/A'}</span></div>
+                        <div class="info-item"><span>Last Modified</span><span>${userReportData.gists[0]?.lastModified || 'N/A'}</span></div>
+                        <div class="info-item"><span>URL</span><span><a href="${userReportData.gists[0]?.url || '#'}" target="_blank">View Gist</a></span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Project Contributions</h6>
+                        <div class="info-item"><span>Project ID</span><span>${userReportData.projectContributors[0]?.projectId || 'N/A'}</span></div>
+                        <div class="info-item"><span>Role</span><span>${userReportData.projectContributors[0]?.role || 'N/A'}</span></div>
+                        <div class="info-item"><span>Date Added</span><span>${userReportData.projectContributors[0]?.dateAdded || 'N/A'}</span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Prompts</h6>
+                        <div class="info-item"><span>Prompt Title</span><span>${userReportData.prompts[0]?.promptTitle || 'N/A'}</span></div>
+                        <div class="info-item"><span>Content</span><span>${userReportData.prompts[0]?.promptContent || 'N/A'}</span></div>
+                        <div class="info-item"><span>Context</span><span>${userReportData.prompts[0]?.context || 'N/A'}</span></div>
+                        <div class="info-item"><span>Created Date</span><span>${userReportData.prompts[0]?.dateCreated || 'N/A'}</span></div>
+                        <div class="info-item"><span>Last Modified</span><span>${userReportData.prompts[0]?.lastModified || 'N/A'}</span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Snippets</h6>
+                        <div class="info-item"><span>Snippet Title</span><span>${userReportData.snippets[0]?.snippetTitle || 'N/A'}</span></div>
+                        <div class="info-item"><span>Language</span><span>${userReportData.snippets[0]?.language || 'N/A'}</span></div>
+                        <div class="info-item"><span>Created Date</span><span>${userReportData.snippets[0]?.dateCreated || 'N/A'}</span></div>
+                        <div class="info-item"><span>Last Modified</span><span>${userReportData.snippets[0]?.lastModified || 'N/A'}</span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Code History</h6>
+                        <div class="info-item"><span>File ID</span><span>${userReportData.codeHistories[0]?.fileId || 'N/A'}</span></div>
+                        <div class="info-item"><span>Language</span><span>${userReportData.codeHistories[0]?.language || 'N/A'}</span></div>
+                        <div class="info-item"><span>Analysis Result</span><span>${userReportData.codeHistories[0]?.analysisResult || 'N/A'}</span></div>
+                        <div class="info-item"><span>Created Date</span><span>${userReportData.codeHistories[0]?.createdDate || 'N/A'}</span></div>
+                    </div>
+    
+                    <div class="section">
+                        <h6>Statistics</h6>
+                        <div class="info-item"><span>Gist Count</span><span>${userReportData.stats[0]?.count || 'N/A'}</span></div>
+                        <div class="info-item"><span>Project Contributions</span><span>${userReportData.stats[1]?.count || 'N/A'}</span></div>
+                        <div class="info-item"><span>Snippet Count</span><span>${userReportData.stats[2]?.count || 'N/A'}</span></div>
+                    </div>
+                </div>
+    
+                <div class="footer">
+                    <p>© 2024 CodeRefineX. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
+    };
+
     return (
         <PanelContainer>
 
@@ -290,6 +408,17 @@ const ImprovePanel: React.FC = () => {
                 <span style={{ fontSize: '14px', color: '#333' }}>Download Analysis Result</span>
                 <PdfDownloadButton htmlContent={generatePdfContent()} fileName="code_analysis_report.pdf" />
             </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                <span style={{ fontSize: '14px', color: '#333' }}>User Analysis Result</span>
+                {userReportData && (
+                    <PdfDownloadButton
+                        htmlContent={generateUserPdfContent()}
+                        fileName="code_analysis_report.pdf"
+                    />
+                )}
+            </div>
+
 
             <Divider />
             {/* <TextareaAutosize id="outlined-basic" label="Outlined" variant="outlined" value={inputCode} onChange={handleCodeChange} /> */}
