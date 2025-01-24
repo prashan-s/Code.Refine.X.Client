@@ -1,22 +1,62 @@
-import { RootState } from "@redux/reducers";
-import { useSelector } from "react-redux";
+import SignIn from "@components/SignIn";
+import SignUp from "@components/SignUp"; // Import SignUp component
+import { FullScreenContainer, HomeScreenContainer, ImageContainer, Wave } from "@styles/Home";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Footer from "@components/Footer";
 
-const Home = () => {
-    // Access the isCollapsed state from Redux
-    const isCollapsed = useSelector((state: RootState) => state.sideBar.isCollapsed);
+interface PageProps {
+    setIsSidebarHidden: (hidden: boolean) => void;
+}
 
-    // Adjust the main content width based on the sidebar's state
-    const contentStyle = {
-        marginRight: isCollapsed ? '60px' : '600px', // Adjust according to sidebar width
-        transition: 'margin-left 0.3s ease',        // Smooth transition
-        padding: '20px',                            // Optional padding for better UX
-    };
+const Home = ({ setIsSidebarHidden }: PageProps) => {
+
+    const [showSignUp, setShowSignUp] = useState(false);
+
+    const toggleSignUp = () => setShowSignUp(!showSignUp);
+
+    // Hide sidebar when on the home page
+    useEffect(() => {
+        setIsSidebarHidden(true);
+
+        // Cleanup: hide sidebar when leaving the home page
+        return () => setIsSidebarHidden(false);
+    }, [setIsSidebarHidden]);
 
     return (
-        <div style={contentStyle}>
-            <h1>Home Page</h1>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat, magni. Incidunt aliquam excepturi libero voluptatem officia illum sequi atque nostrum obcaecati, iure non nemo hic optio consectetur maxime corrupti reiciendis.</p>
-        </div>
+        <HomeScreenContainer>
+            <FullScreenContainer>
+                <ImageContainer>
+                    <img src="/src/assets/CodeRefineX.png" alt="Decorative" />
+                </ImageContainer>
+                <AnimatePresence mode="wait">
+                    {!showSignUp ? (
+                        <motion.div
+                            key="signIn"
+                            initial={{ opacity: 0, x: -100 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 100, transition: { duration: 0.4 } }}
+                            transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.5 }}
+                        >
+                            <SignIn onSignUpClick={toggleSignUp} />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="signUp"
+                            initial={{ opacity: 0, x: 100 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -100, transition: { duration: 0.4 } }}
+                            transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.5 }}
+                        >
+                            <SignUp onSignInClick={toggleSignUp} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+            </FullScreenContainer>
+            <Wave />
+            <Footer />
+        </HomeScreenContainer>
     );
 };
 

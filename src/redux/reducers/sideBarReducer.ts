@@ -1,7 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+interface SideBarState {
+    isCollapsed: boolean;
+    isSidebarHidden: boolean; // New state to control visibility
+}
+
+const initialState: SideBarState = {
     isCollapsed: false,
+    isSidebarHidden: false, // Initially sidebar is visible
 };
 
 const sideBarSlice = createSlice({
@@ -14,8 +20,11 @@ const sideBarSlice = createSlice({
         extended: (state) => {
             state.isCollapsed = false;
         },
+        setIsSidebarHidden: (state, action: PayloadAction<boolean>) => {
+            state.isSidebarHidden = action.payload;
+        },
     },
 });
 
-export const { collapsed, extended } = sideBarSlice.actions; // Export actions for dispatching
+export const { collapsed, extended, setIsSidebarHidden } = sideBarSlice.actions; // Export actions for dispatching
 export default sideBarSlice.reducer;
